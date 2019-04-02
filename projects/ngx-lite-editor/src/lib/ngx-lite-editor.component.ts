@@ -6,8 +6,10 @@ import {Component} from '@angular/core';
   styleUrls: ['./ngx-lite-editor.component.scss']
 })
 export class NgxLiteEditorComponent {
+
   constructor() {
   }
+
 
 
 }
