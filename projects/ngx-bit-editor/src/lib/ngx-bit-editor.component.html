@@ -1,5 +1,5 @@
-<div class="ant-input ant-bit-editor">
-  <label>
-    <textarea #htmlTextAreaElement (input)="inputText($event)"></textarea>
-  </label>
+<div #htmlDivElement
+     class="ant-input ant-bit-editor"
+     contenteditable="true"
+     (input)="inputText($event)">
 </div>
