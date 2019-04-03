@@ -1,7 +1,7 @@
 {
   "name": "ngx-lite-editor-dev",
   "scripts": {
-    "start": "ng serve"
+    "start": "ng serve --host 0.0.0.0 --disable-host-check"
   },
   "private": true,
   "dependencies": {
