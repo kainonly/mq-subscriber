@@ -19,6 +19,12 @@
       "dom"
     ],
     "paths": {
+      "ngx-bit-editor": [
+        "dist/ngx-bit-editor"
+      ],
+      "ngx-bit-editor/*": [
+        "dist/ngx-bit-editor/*"
+      ]
     }
   }
 }
