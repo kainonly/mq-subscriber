@@ -95,41 +95,6 @@
           }
         }
       }
-    },
-    "ngx-lite-editor": {
-      "root": "projects/ngx-lite-editor",
-      "sourceRoot": "projects/ngx-lite-editor/src",
-      "projectType": "library",
-      "prefix": "lib",
-      "architect": {
-        "build": {
-          "builder": "@angular-devkit/build-ng-packagr:build",
-          "options": {
-            "tsConfig": "projects/ngx-lite-editor/tsconfig.lib.json",
-            "project": "projects/ngx-lite-editor/ng-package.json"
-          }
-        },
-        "test": {
-          "builder": "@angular-devkit/build-angular:karma",
-          "options": {
-            "main": "projects/ngx-lite-editor/src/test.ts",
-            "tsConfig": "projects/ngx-lite-editor/tsconfig.spec.json",
-            "karmaConfig": "projects/ngx-lite-editor/karma.conf.js"
-          }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": [
-              "projects/ngx-lite-editor/tsconfig.lib.json",
-              "projects/ngx-lite-editor/tsconfig.spec.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
-          }
-        }
-      }
     }
   },
   "defaultProject": "ngx-lite-editor-dev"

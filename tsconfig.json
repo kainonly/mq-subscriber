@@ -19,15 +19,6 @@
       "dom"
     ],
     "paths": {
-      //      "ngx-lite-editor": [
-      //        "dist/ngx-lite-editor"
-      //      ],
-      //      "ngx-lite-editor/*": [
-      //        "dist/ngx-lite-editor/*"
-      //      ],
-      "ngx-lite-editor": [
-        "projects/ngx-lite-editor/src/public-api.ts"
-      ]
     }
   }
 }
