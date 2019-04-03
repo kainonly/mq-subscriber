@@ -1,5 +1,5 @@
 <div style="background: #ECECEC;padding:30px;height: 100%">
   <nz-card [nzBordered]="false" nzTitle="NGX-BIT-Editor">
-
+    <ngx-bit-editor [(ngModel)]="html" (ngModelChange)="htmlChange($event)"></ngx-bit-editor>
   </nz-card>
 </div>
