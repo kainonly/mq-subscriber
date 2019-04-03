@@ -19,11 +19,14 @@
       "dom"
     ],
     "paths": {
+      //      "ngx-bit-editor": [
+      //        "dist/ngx-bit-editor"
+      //      ],
+      //      "ngx-bit-editor/*": [
+      //        "dist/ngx-bit-editor/*"
+      //      ],
       "ngx-bit-editor": [
-        "dist/ngx-bit-editor"
-      ],
-      "ngx-bit-editor/*": [
-        "dist/ngx-bit-editor/*"
+        "projects/ngx-bit-editor/src/public-api.ts"
       ]
     }
   }
