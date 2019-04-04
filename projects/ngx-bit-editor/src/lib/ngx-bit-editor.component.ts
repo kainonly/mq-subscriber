@@ -1,4 +1,13 @@
-import {AfterViewInit, Component, ElementRef, forwardRef, HostListener, OnInit, Renderer2, ViewChild} from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  forwardRef,
+  HostListener,
+  OnInit,
+  Renderer2,
+  ViewChild
+} from '@angular/core';
 import {NG_VALUE_ACCESSOR} from '@angular/forms';
 import {DomSanitizer, SafeHtml} from '@angular/platform-browser';
 
@@ -17,10 +26,11 @@ import {DomSanitizer, SafeHtml} from '@angular/platform-browser';
 export class NgxBitEditorComponent implements OnInit, AfterViewInit {
   @ViewChild('htmlDivElement') htmlDivElement: ElementRef;
 
-  safeHtml: SafeHtml;
+  html: string;
 
   private selfOnChange: (value: string) => void;
   private selfOnTouched: () => void;
+  private mutationObserver: MutationObserver;
 
   constructor(private renderer: Renderer2,
               private domSanitizer: DomSanitizer) {
@@ -40,13 +50,13 @@ export class NgxBitEditorComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
+
   }
 
   ngAfterViewInit() {
   }
 
   inputText(event) {
-    const innerHTML = event.target.innerHTML;
-    console.log(innerHTML);
+    this.html = event.target.innerHTML;
   }
 }
