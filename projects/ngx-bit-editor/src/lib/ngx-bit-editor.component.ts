@@ -3,13 +3,12 @@ import {
   Component,
   ElementRef,
   forwardRef,
-  HostListener,
   OnInit,
   Renderer2,
-  ViewChild
+  ViewChild,
 } from '@angular/core';
 import {NG_VALUE_ACCESSOR} from '@angular/forms';
-import {DomSanitizer, SafeHtml} from '@angular/platform-browser';
+import {NgxBitEditorService} from "./ngx-bit-editor.service";
 
 @Component({
   selector: 'ngx-bit-editor',
@@ -30,10 +29,9 @@ export class NgxBitEditorComponent implements OnInit, AfterViewInit {
 
   private selfOnChange: (value: string) => void;
   private selfOnTouched: () => void;
-  private mutationObserver: MutationObserver;
 
   constructor(private renderer: Renderer2,
-              private domSanitizer: DomSanitizer) {
+              private ngxBitEditorService: NgxBitEditorService) {
   }
 
   writeValue(value: string) {
@@ -50,13 +48,13 @@ export class NgxBitEditorComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
-
+    this.ngxBitEditorService.exec('defaultParagraphSeparator', 'p');
   }
 
   ngAfterViewInit() {
   }
 
-  inputText(event) {
-    this.html = event.target.innerHTML;
+  updateHtml(event) {
+    console.log(this.htmlDivElement.nativeElement.innerHTML);
   }
 }
