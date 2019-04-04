@@ -1,6 +1,3 @@
-<div #htmlDivElement
-     class="ant-input ant-bit-editor"
-     contenteditable="true"
-     (input)="inputText($event)">
+<div contenteditable class="ant-bit-editor" #htmlDivElement
+     (input)="updateHtml($event)">
 </div>
-<pre>{{html}}</pre>
