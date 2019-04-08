@@ -8,7 +8,6 @@ import {
   ViewChild,
 } from '@angular/core';
 import {NG_VALUE_ACCESSOR} from '@angular/forms';
-import {NgxBitEditorService} from "./ngx-bit-editor.service";
 
 @Component({
   selector: 'ngx-bit-editor',
@@ -30,13 +29,14 @@ export class NgxBitEditorComponent implements OnInit, AfterViewInit {
   private selfOnChange: (value: string) => void;
   private selfOnTouched: () => void;
 
-  constructor(private renderer: Renderer2,
-              private ngxBitEditorService: NgxBitEditorService) {
+  static exec(id: string, value: string): boolean {
+    return document.execCommand(id, false, value);
+  }
+
+  constructor(private renderer: Renderer2) {
   }
 
   writeValue(value: string) {
-    // console.log(value);
-    // this.renderer.setProperty(this.htmlTextAreaElement.nativeElement, 'value', value);
   }
 
   registerOnChange(fn: (_: any) => {}) {
@@ -48,13 +48,20 @@ export class NgxBitEditorComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
-    this.ngxBitEditorService.exec('defaultParagraphSeparator', 'p');
+    NgxBitEditorComponent.exec('defaultParagraphSeparator', 'p');
   }
 
   ngAfterViewInit() {
   }
 
-  updateHtml(event) {
+  update() {
+    // console.log(this.htmlDivElement);
+    // const outerText = this.htmlDivElement.nativeElement.outerText;
+    // const firstChild = this.htmlDivElement.nativeElement.firstChild;
+    // if (firstChild.nodeType === 3) {
+    //   // const firstNode = this.renderer.createElement('p');
+    //   // this.renderer.setValue(firstChild, `<p>${firstChild.innerText}</p>`);
+    // }
     console.log(this.htmlDivElement.nativeElement.innerHTML);
   }
 }
