@@ -1,0 +1,12 @@
+{
+    "name": "kain/mqtt-trigger-sdk",
+    "description": "MQTT Trigger",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "kain",
+            "email": "zhangtqx@vip.qq.com"
+        }
+    ],
+    "require": {}
+}
