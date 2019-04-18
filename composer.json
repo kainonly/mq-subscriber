@@ -1,12 +1,19 @@
 {
-    "name": "kain/mqtt-trigger-sdk",
-    "description": "MQTT Trigger",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "kain",
-            "email": "zhangtqx@vip.qq.com"
-        }
-    ],
-    "require": {}
+  "name": "kain/mqtt-trigger-sdk",
+  "description": "MQTT Trigger PHP SDK for mqtt-trigger",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "kain",
+      "email": "zhangtqx@vip.qq.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "mqtt\\trigger\\": "src/"
+    }
+  },
+  "require": {
+    "guzzlehttp/guzzle": "^6.3"
+  }
 }
