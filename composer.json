@@ -1,6 +1,6 @@
 {
-  "name": "kain/mqtt-trigger-sdk",
-  "description": "MQTT Trigger PHP SDK for mqtt-trigger",
+  "name": "kain/mqtt-api-trigger-sdk",
+  "description": "MQTT API Trigger PHP SDK for mqtt-api-trigger",
   "license": "MIT",
   "authors": [
     {
