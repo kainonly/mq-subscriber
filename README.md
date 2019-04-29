@@ -1,13 +1,13 @@
-# mqtt-trigger-sdk
+# mqtt-api-trigger-sdk
 
-MQTT Trigger PHP SDK for [mqtt-trigger](https://github.com/kainonly/mqtt-trigger)
+MQTT API Trigger PHP SDK for [mqtt-api-trigger](https://github.com/kainonly/mqtt-api-trigger)
 
 ### Initialization
 
 Setup
 
 ```shell
-composer require kain/mqtt-trigger-sdk
+composer require kain/mqtt-api-trigger-sdk
 ```
 
 Usage
