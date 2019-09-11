@@ -1,18 +1,15 @@
-# mqtt-api-trigger-sdk
+Think Elastic
+=======
 
-MQTT API Trigger PHP SDK for [mqtt-api-trigger](https://github.com/kainonly/mqtt-api-trigger)
+ThinkPHP 数据收集扩展
 
-### Initialization
+![Packagist Version](https://img.shields.io/packagist/v/kain/think-logging.svg?style=flat-square)
+![Packagist](https://img.shields.io/packagist/dt/kain/think-logging.svg?color=blue&style=flat-square)
+![PHP from Packagist](https://img.shields.io/packagist/php-v/kain/think-logging.svg?color=blue&style=flat-square)
+![Packagist](https://img.shields.io/packagist/l/kain/think-logging.svg?color=blue&style=flat-square)
 
-Setup
+#### 安装
 
 ```shell
-composer require kain/mqtt-api-trigger-sdk
-```
-
-Usage
-
-```php
-$mqtt = new MQTT('http://localhost:3000');
-$req = $mqtt->trigger('erp.order.create', 'L2-ccq123456');
+composer require kain/think-logging
 ```

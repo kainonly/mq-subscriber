@@ -1,19 +1,31 @@
 {
-  "name": "kain/mqtt-api-trigger-sdk",
-  "description": "MQTT API Trigger PHP SDK for mqtt-api-trigger",
-  "license": "MIT",
+  "name": "kain/think-logging",
+  "description": "ThinkPHP 数据收集扩展",
+  "require": {
+    "think/amqp": "^1.0",
+    "think/elastic": "^1.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "think\\logging\\": "src/"
+    }
+  },
+  "extra": {
+    "think": {
+      "services": [
+        "think\\logging\\service\\LoggingService"
+      ]
+    }
+  },
   "authors": [
     {
       "name": "kain",
       "email": "zhangtqx@vip.qq.com"
     }
   ],
-  "autoload": {
-    "psr-4": {
-      "mqtt\\trigger\\": "src/"
-    }
+  "support": {
+    "docs": "https://think-bit.kain.net.cn",
+    "email": "zhangtqx@vip.qq.com"
   },
-  "require": {
-    "guzzlehttp/guzzle": "^6.3"
-  }
+  "license": "MIT"
 }
