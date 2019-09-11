@@ -2,7 +2,7 @@
   "name": "kain/think-logging",
   "description": "ThinkPHP 数据异步收集扩展",
   "require": {
-    "think/amqp": "^1.0"
+    "think/amqp": "*"
   },
   "autoload": {
     "psr-4": {
