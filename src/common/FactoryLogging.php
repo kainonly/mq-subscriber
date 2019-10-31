@@ -2,7 +2,7 @@
 
 namespace think\logging;
 
-use think\amqp\facade\AMQP;
+use think\support\facade\AMQP;
 
 /**
  * Class FactoryLogging
