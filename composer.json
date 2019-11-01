@@ -2,6 +2,8 @@
   "name": "kain/think-logging",
   "description": "ThinkPHP 数据异步收集扩展",
   "require": {
+    "php": ">=7.2.0",
+    "topthink/framework": "^6.0.0",
     "think/amqp": "*"
   },
   "autoload": {
