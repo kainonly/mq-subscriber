@@ -13,12 +13,18 @@ import (
 )
 
 func main() {
-	go func() {
-		http.ListenAndServe(":6060", nil)
-	}()
 	cfg, err := ini.Load("config.ini")
 	if err != nil {
 		log.Fatalln(err)
+	}
+	debug, err := cfg.Section("SERVER").Key("debug").Bool()
+	if err != nil {
+		log.Fatalln(err)
+	}
+	if debug {
+		go func() {
+			http.ListenAndServe(":6060", nil)
+		}()
 	}
 	subscribe := subscriber.Create(cfg.Section("AMQP"))
 	defer subscribe.Close()
