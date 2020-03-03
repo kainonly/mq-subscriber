@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+message PutParameter {
+    string identity = 1;
+    string queue = 2;
+}
+
+message PutResponse {
+    uint32 error = 1;
+    string msg = 2;
+}
+
+service Router {
+    rpc Put (PutParameter) returns (PutResponse) {
+    }
+}
