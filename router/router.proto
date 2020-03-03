@@ -3,6 +3,8 @@ syntax = "proto3";
 message PutParameter {
     string identity = 1;
     string queue = 2;
+    string url = 3;
+    string secret = 4;
 }
 
 message PutResponse {
