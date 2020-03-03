@@ -5,6 +5,6 @@ import (
 	"context"
 )
 
-func (c *controller) Put(ctx context.Context, query *pb.PutParameter) (*pb.Response, error) {
+func (c *controller) Delete(ctx context.Context, query *pb.DeleteParameter) (*pb.Response, error) {
 	return &pb.Response{}, nil
 }
