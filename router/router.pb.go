@@ -7,6 +7,7 @@ import (
 	context "context"
 	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
+	any "github.com/golang/protobuf/ptypes/any"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -24,9 +25,308 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
+type NoParameter struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *NoParameter) Reset()         { *m = NoParameter{} }
+func (m *NoParameter) String() string { return proto.CompactTextString(m) }
+func (*NoParameter) ProtoMessage()    {}
+func (*NoParameter) Descriptor() ([]byte, []int) {
+	return fileDescriptor_367072455c71aedc, []int{0}
+}
+
+func (m *NoParameter) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_NoParameter.Unmarshal(m, b)
+}
+func (m *NoParameter) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_NoParameter.Marshal(b, m, deterministic)
+}
+func (m *NoParameter) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_NoParameter.Merge(m, src)
+}
+func (m *NoParameter) XXX_Size() int {
+	return xxx_messageInfo_NoParameter.Size(m)
+}
+func (m *NoParameter) XXX_DiscardUnknown() {
+	xxx_messageInfo_NoParameter.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_NoParameter proto.InternalMessageInfo
+
+type Response struct {
+	Error                uint32   `protobuf:"varint,1,opt,name=error,proto3" json:"error,omitempty"`
+	Msg                  string   `protobuf:"bytes,2,opt,name=msg,proto3" json:"msg,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *Response) Reset()         { *m = Response{} }
+func (m *Response) String() string { return proto.CompactTextString(m) }
+func (*Response) ProtoMessage()    {}
+func (*Response) Descriptor() ([]byte, []int) {
+	return fileDescriptor_367072455c71aedc, []int{1}
+}
+
+func (m *Response) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Response.Unmarshal(m, b)
+}
+func (m *Response) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Response.Marshal(b, m, deterministic)
+}
+func (m *Response) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Response.Merge(m, src)
+}
+func (m *Response) XXX_Size() int {
+	return xxx_messageInfo_Response.Size(m)
+}
+func (m *Response) XXX_DiscardUnknown() {
+	xxx_messageInfo_Response.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Response proto.InternalMessageInfo
+
+func (m *Response) GetError() uint32 {
+	if m != nil {
+		return m.Error
+	}
+	return 0
+}
+
+func (m *Response) GetMsg() string {
+	if m != nil {
+		return m.Msg
+	}
+	return ""
+}
+
+type AllResponse struct {
+	Error                uint32   `protobuf:"varint,1,opt,name=error,proto3" json:"error,omitempty"`
+	Data                 []string `protobuf:"bytes,2,rep,name=data,proto3" json:"data,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *AllResponse) Reset()         { *m = AllResponse{} }
+func (m *AllResponse) String() string { return proto.CompactTextString(m) }
+func (*AllResponse) ProtoMessage()    {}
+func (*AllResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_367072455c71aedc, []int{2}
+}
+
+func (m *AllResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_AllResponse.Unmarshal(m, b)
+}
+func (m *AllResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_AllResponse.Marshal(b, m, deterministic)
+}
+func (m *AllResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AllResponse.Merge(m, src)
+}
+func (m *AllResponse) XXX_Size() int {
+	return xxx_messageInfo_AllResponse.Size(m)
+}
+func (m *AllResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_AllResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_AllResponse proto.InternalMessageInfo
+
+func (m *AllResponse) GetError() uint32 {
+	if m != nil {
+		return m.Error
+	}
+	return 0
+}
+
+func (m *AllResponse) GetData() []string {
+	if m != nil {
+		return m.Data
+	}
+	return nil
+}
+
+type GetParameter struct {
+	Identity             string   `protobuf:"bytes,1,opt,name=identity,proto3" json:"identity,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *GetParameter) Reset()         { *m = GetParameter{} }
+func (m *GetParameter) String() string { return proto.CompactTextString(m) }
+func (*GetParameter) ProtoMessage()    {}
+func (*GetParameter) Descriptor() ([]byte, []int) {
+	return fileDescriptor_367072455c71aedc, []int{3}
+}
+
+func (m *GetParameter) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GetParameter.Unmarshal(m, b)
+}
+func (m *GetParameter) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GetParameter.Marshal(b, m, deterministic)
+}
+func (m *GetParameter) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetParameter.Merge(m, src)
+}
+func (m *GetParameter) XXX_Size() int {
+	return xxx_messageInfo_GetParameter.Size(m)
+}
+func (m *GetParameter) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetParameter.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GetParameter proto.InternalMessageInfo
+
+func (m *GetParameter) GetIdentity() string {
+	if m != nil {
+		return m.Identity
+	}
+	return ""
+}
+
+type GetResponse struct {
+	Error                uint32   `protobuf:"varint,1,opt,name=error,proto3" json:"error,omitempty"`
+	Data                 *any.Any `protobuf:"bytes,2,opt,name=data,proto3" json:"data,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *GetResponse) Reset()         { *m = GetResponse{} }
+func (m *GetResponse) String() string { return proto.CompactTextString(m) }
+func (*GetResponse) ProtoMessage()    {}
+func (*GetResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_367072455c71aedc, []int{4}
+}
+
+func (m *GetResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GetResponse.Unmarshal(m, b)
+}
+func (m *GetResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GetResponse.Marshal(b, m, deterministic)
+}
+func (m *GetResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetResponse.Merge(m, src)
+}
+func (m *GetResponse) XXX_Size() int {
+	return xxx_messageInfo_GetResponse.Size(m)
+}
+func (m *GetResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GetResponse proto.InternalMessageInfo
+
+func (m *GetResponse) GetError() uint32 {
+	if m != nil {
+		return m.Error
+	}
+	return 0
+}
+
+func (m *GetResponse) GetData() *any.Any {
+	if m != nil {
+		return m.Data
+	}
+	return nil
+}
+
+type ListsParameter struct {
+	Identity             []string `protobuf:"bytes,1,rep,name=identity,proto3" json:"identity,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ListsParameter) Reset()         { *m = ListsParameter{} }
+func (m *ListsParameter) String() string { return proto.CompactTextString(m) }
+func (*ListsParameter) ProtoMessage()    {}
+func (*ListsParameter) Descriptor() ([]byte, []int) {
+	return fileDescriptor_367072455c71aedc, []int{5}
+}
+
+func (m *ListsParameter) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ListsParameter.Unmarshal(m, b)
+}
+func (m *ListsParameter) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ListsParameter.Marshal(b, m, deterministic)
+}
+func (m *ListsParameter) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ListsParameter.Merge(m, src)
+}
+func (m *ListsParameter) XXX_Size() int {
+	return xxx_messageInfo_ListsParameter.Size(m)
+}
+func (m *ListsParameter) XXX_DiscardUnknown() {
+	xxx_messageInfo_ListsParameter.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ListsParameter proto.InternalMessageInfo
+
+func (m *ListsParameter) GetIdentity() []string {
+	if m != nil {
+		return m.Identity
+	}
+	return nil
+}
+
+type ListsResponse struct {
+	Error                uint32     `protobuf:"varint,1,opt,name=error,proto3" json:"error,omitempty"`
+	Data                 []*any.Any `protobuf:"bytes,2,rep,name=data,proto3" json:"data,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}   `json:"-"`
+	XXX_unrecognized     []byte     `json:"-"`
+	XXX_sizecache        int32      `json:"-"`
+}
+
+func (m *ListsResponse) Reset()         { *m = ListsResponse{} }
+func (m *ListsResponse) String() string { return proto.CompactTextString(m) }
+func (*ListsResponse) ProtoMessage()    {}
+func (*ListsResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_367072455c71aedc, []int{6}
+}
+
+func (m *ListsResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ListsResponse.Unmarshal(m, b)
+}
+func (m *ListsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ListsResponse.Marshal(b, m, deterministic)
+}
+func (m *ListsResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ListsResponse.Merge(m, src)
+}
+func (m *ListsResponse) XXX_Size() int {
+	return xxx_messageInfo_ListsResponse.Size(m)
+}
+func (m *ListsResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_ListsResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ListsResponse proto.InternalMessageInfo
+
+func (m *ListsResponse) GetError() uint32 {
+	if m != nil {
+		return m.Error
+	}
+	return 0
+}
+
+func (m *ListsResponse) GetData() []*any.Any {
+	if m != nil {
+		return m.Data
+	}
+	return nil
+}
+
 type PutParameter struct {
 	Identity             string   `protobuf:"bytes,1,opt,name=identity,proto3" json:"identity,omitempty"`
 	Queue                string   `protobuf:"bytes,2,opt,name=queue,proto3" json:"queue,omitempty"`
+	Url                  string   `protobuf:"bytes,3,opt,name=url,proto3" json:"url,omitempty"`
+	Secret               string   `protobuf:"bytes,4,opt,name=secret,proto3" json:"secret,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -36,7 +336,7 @@ func (m *PutParameter) Reset()         { *m = PutParameter{} }
 func (m *PutParameter) String() string { return proto.CompactTextString(m) }
 func (*PutParameter) ProtoMessage()    {}
 func (*PutParameter) Descriptor() ([]byte, []int) {
-	return fileDescriptor_367072455c71aedc, []int{0}
+	return fileDescriptor_367072455c71aedc, []int{7}
 }
 
 func (m *PutParameter) XXX_Unmarshal(b []byte) error {
@@ -71,72 +371,98 @@ func (m *PutParameter) GetQueue() string {
 	return ""
 }
 
-type PutResponse struct {
-	Error                uint32   `protobuf:"varint,1,opt,name=error,proto3" json:"error,omitempty"`
-	Msg                  string   `protobuf:"bytes,2,opt,name=msg,proto3" json:"msg,omitempty"`
+func (m *PutParameter) GetUrl() string {
+	if m != nil {
+		return m.Url
+	}
+	return ""
+}
+
+func (m *PutParameter) GetSecret() string {
+	if m != nil {
+		return m.Secret
+	}
+	return ""
+}
+
+type DeleteParameter struct {
+	Identity             string   `protobuf:"bytes,1,opt,name=identity,proto3" json:"identity,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *PutResponse) Reset()         { *m = PutResponse{} }
-func (m *PutResponse) String() string { return proto.CompactTextString(m) }
-func (*PutResponse) ProtoMessage()    {}
-func (*PutResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_367072455c71aedc, []int{1}
+func (m *DeleteParameter) Reset()         { *m = DeleteParameter{} }
+func (m *DeleteParameter) String() string { return proto.CompactTextString(m) }
+func (*DeleteParameter) ProtoMessage()    {}
+func (*DeleteParameter) Descriptor() ([]byte, []int) {
+	return fileDescriptor_367072455c71aedc, []int{8}
 }
 
-func (m *PutResponse) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_PutResponse.Unmarshal(m, b)
+func (m *DeleteParameter) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_DeleteParameter.Unmarshal(m, b)
 }
-func (m *PutResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_PutResponse.Marshal(b, m, deterministic)
+func (m *DeleteParameter) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_DeleteParameter.Marshal(b, m, deterministic)
 }
-func (m *PutResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_PutResponse.Merge(m, src)
+func (m *DeleteParameter) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_DeleteParameter.Merge(m, src)
 }
-func (m *PutResponse) XXX_Size() int {
-	return xxx_messageInfo_PutResponse.Size(m)
+func (m *DeleteParameter) XXX_Size() int {
+	return xxx_messageInfo_DeleteParameter.Size(m)
 }
-func (m *PutResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_PutResponse.DiscardUnknown(m)
+func (m *DeleteParameter) XXX_DiscardUnknown() {
+	xxx_messageInfo_DeleteParameter.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_PutResponse proto.InternalMessageInfo
+var xxx_messageInfo_DeleteParameter proto.InternalMessageInfo
 
-func (m *PutResponse) GetError() uint32 {
+func (m *DeleteParameter) GetIdentity() string {
 	if m != nil {
-		return m.Error
-	}
-	return 0
-}
-
-func (m *PutResponse) GetMsg() string {
-	if m != nil {
-		return m.Msg
+		return m.Identity
 	}
 	return ""
 }
 
 func init() {
+	proto.RegisterType((*NoParameter)(nil), "NoParameter")
+	proto.RegisterType((*Response)(nil), "Response")
+	proto.RegisterType((*AllResponse)(nil), "AllResponse")
+	proto.RegisterType((*GetParameter)(nil), "GetParameter")
+	proto.RegisterType((*GetResponse)(nil), "GetResponse")
+	proto.RegisterType((*ListsParameter)(nil), "ListsParameter")
+	proto.RegisterType((*ListsResponse)(nil), "ListsResponse")
 	proto.RegisterType((*PutParameter)(nil), "PutParameter")
-	proto.RegisterType((*PutResponse)(nil), "PutResponse")
+	proto.RegisterType((*DeleteParameter)(nil), "DeleteParameter")
 }
 
 func init() { proto.RegisterFile("router.proto", fileDescriptor_367072455c71aedc) }
 
 var fileDescriptor_367072455c71aedc = []byte{
-	// 160 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xe2, 0x29, 0xca, 0x2f, 0x2d,
-	0x49, 0x2d, 0xd2, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x57, 0x72, 0xe0, 0xe2, 0x09, 0x28, 0x2d, 0x09,
-	0x48, 0x2c, 0x4a, 0xcc, 0x4d, 0x2d, 0x49, 0x2d, 0x12, 0x92, 0xe2, 0xe2, 0xc8, 0x4c, 0x49, 0xcd,
-	0x2b, 0xc9, 0x2c, 0xa9, 0x94, 0x60, 0x54, 0x60, 0xd4, 0xe0, 0x0c, 0x82, 0xf3, 0x85, 0x44, 0xb8,
-	0x58, 0x0b, 0x4b, 0x53, 0x4b, 0x53, 0x25, 0x98, 0xc0, 0x12, 0x10, 0x8e, 0x92, 0x29, 0x17, 0x77,
-	0x40, 0x69, 0x49, 0x50, 0x6a, 0x71, 0x41, 0x7e, 0x5e, 0x71, 0x2a, 0x48, 0x51, 0x6a, 0x51, 0x51,
-	0x7e, 0x11, 0x58, 0x37, 0x6f, 0x10, 0x84, 0x23, 0x24, 0xc0, 0xc5, 0x9c, 0x5b, 0x9c, 0x0e, 0xd5,
-	0x08, 0x62, 0x1a, 0xe9, 0x71, 0xb1, 0x05, 0x81, 0x1d, 0x22, 0xa4, 0xc2, 0xc5, 0x1c, 0x50, 0x5a,
-	0x22, 0xc4, 0xab, 0x87, 0xec, 0x10, 0x29, 0x1e, 0x3d, 0x24, 0x53, 0x95, 0x18, 0x92, 0xd8, 0xc0,
-	0xee, 0x35, 0x06, 0x04, 0x00, 0x00, 0xff, 0xff, 0xd2, 0xe1, 0xef, 0xb3, 0xbf, 0x00, 0x00, 0x00,
+	// 358 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x92, 0x4f, 0x6b, 0xea, 0x40,
+	0x14, 0xc5, 0x8d, 0xa3, 0xc1, 0xdc, 0x24, 0x2a, 0x83, 0x3c, 0xf2, 0xb2, 0xf2, 0xcd, 0x2b, 0x34,
+	0x48, 0x3b, 0x82, 0x5d, 0x74, 0x2d, 0x14, 0xdc, 0xf4, 0x8f, 0xe4, 0x1b, 0xc4, 0x7a, 0x2b, 0x96,
+	0x31, 0x63, 0x27, 0x33, 0x0b, 0x3f, 0x63, 0xbf, 0x54, 0xc9, 0xc4, 0x4a, 0x52, 0x28, 0xba, 0x9b,
+	0x93, 0xdc, 0x99, 0x1f, 0xe7, 0x9c, 0x0b, 0x81, 0x92, 0x46, 0xa3, 0xe2, 0x7b, 0x25, 0xb5, 0x8c,
+	0xff, 0x6e, 0xa4, 0xdc, 0x08, 0x9c, 0x5a, 0xb5, 0x32, 0x6f, 0xd3, 0x2c, 0x3f, 0x54, 0xbf, 0x58,
+	0x08, 0xfe, 0xb3, 0x5c, 0x66, 0x2a, 0xdb, 0xa1, 0x46, 0xc5, 0x66, 0xd0, 0x4b, 0xb1, 0xd8, 0xcb,
+	0xbc, 0x40, 0x3a, 0x82, 0x2e, 0x2a, 0x25, 0x55, 0xe4, 0x8c, 0x9d, 0x24, 0x4c, 0x2b, 0x41, 0x87,
+	0x40, 0x76, 0xc5, 0x26, 0x6a, 0x8f, 0x9d, 0xc4, 0x4b, 0xcb, 0x23, 0xbb, 0x07, 0x7f, 0x2e, 0xc4,
+	0x99, 0x6b, 0x14, 0x3a, 0xeb, 0x4c, 0x67, 0x51, 0x7b, 0x4c, 0x12, 0x2f, 0xb5, 0x67, 0x36, 0x81,
+	0x60, 0x81, 0xfa, 0x04, 0xa7, 0x31, 0xf4, 0xb6, 0x6b, 0xcc, 0xf5, 0x56, 0x1f, 0xec, 0x65, 0x2f,
+	0x3d, 0x69, 0xf6, 0x04, 0xfe, 0x02, 0xf5, 0x19, 0x48, 0x72, 0x82, 0x38, 0x89, 0x3f, 0x1b, 0xf1,
+	0xca, 0x36, 0xff, 0xb6, 0xcd, 0xe7, 0xf9, 0xe1, 0x88, 0xbe, 0x81, 0xfe, 0xe3, 0xb6, 0xd0, 0xc5,
+	0x6f, 0x70, 0xd2, 0x80, 0xbf, 0x40, 0x68, 0xa7, 0x2f, 0xc6, 0x93, 0x33, 0xf8, 0x77, 0x08, 0x96,
+	0xe6, 0x32, 0xe7, 0x25, 0xeb, 0xc3, 0xa0, 0xc1, 0x63, 0xe4, 0x95, 0x28, 0x6b, 0x30, 0x4a, 0x44,
+	0xa4, 0xaa, 0xc1, 0x28, 0x41, 0xff, 0x80, 0x5b, 0xe0, 0xab, 0x42, 0x1d, 0x75, 0xec, 0xc7, 0xa3,
+	0x62, 0xb7, 0x30, 0x78, 0x40, 0x81, 0x1a, 0x2f, 0xc2, 0xcd, 0x3e, 0x1d, 0x70, 0x53, 0xbb, 0x3c,
+	0xf4, 0x3f, 0x90, 0xb9, 0x10, 0x34, 0xe0, 0xb5, 0x0d, 0x89, 0x03, 0x5e, 0x2b, 0x9b, 0xb5, 0xe8,
+	0x15, 0x90, 0x05, 0x6a, 0x1a, 0xf2, 0x7a, 0x95, 0x71, 0xc0, 0x6b, 0x6d, 0xb1, 0x16, 0x9d, 0x40,
+	0xd7, 0x26, 0x48, 0x07, 0xbc, 0x99, 0x7b, 0xdc, 0xe7, 0x8d, 0x68, 0x59, 0x8b, 0xfe, 0x03, 0xb2,
+	0x34, 0xe5, 0x8b, 0xf5, 0x88, 0x62, 0x8f, 0xd7, 0x46, 0xae, 0xc1, 0xad, 0x3c, 0xd1, 0x21, 0xff,
+	0x61, 0xae, 0x31, 0xb8, 0x72, 0x6d, 0xf8, 0x77, 0x5f, 0x01, 0x00, 0x00, 0xff, 0xff, 0x19, 0x1a,
+	0x21, 0xf5, 0x10, 0x03, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -151,7 +477,11 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type RouterClient interface {
-	Put(ctx context.Context, in *PutParameter, opts ...grpc.CallOption) (*PutResponse, error)
+	All(ctx context.Context, in *NoParameter, opts ...grpc.CallOption) (*AllResponse, error)
+	Get(ctx context.Context, in *GetParameter, opts ...grpc.CallOption) (*GetResponse, error)
+	Lists(ctx context.Context, in *ListsParameter, opts ...grpc.CallOption) (*ListsResponse, error)
+	Put(ctx context.Context, in *PutParameter, opts ...grpc.CallOption) (*Response, error)
+	Delete(ctx context.Context, in *DeleteParameter, opts ...grpc.CallOption) (*Response, error)
 }
 
 type routerClient struct {
@@ -162,9 +492,45 @@ func NewRouterClient(cc *grpc.ClientConn) RouterClient {
 	return &routerClient{cc}
 }
 
-func (c *routerClient) Put(ctx context.Context, in *PutParameter, opts ...grpc.CallOption) (*PutResponse, error) {
-	out := new(PutResponse)
+func (c *routerClient) All(ctx context.Context, in *NoParameter, opts ...grpc.CallOption) (*AllResponse, error) {
+	out := new(AllResponse)
+	err := c.cc.Invoke(ctx, "/Router/All", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *routerClient) Get(ctx context.Context, in *GetParameter, opts ...grpc.CallOption) (*GetResponse, error) {
+	out := new(GetResponse)
+	err := c.cc.Invoke(ctx, "/Router/Get", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *routerClient) Lists(ctx context.Context, in *ListsParameter, opts ...grpc.CallOption) (*ListsResponse, error) {
+	out := new(ListsResponse)
+	err := c.cc.Invoke(ctx, "/Router/Lists", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *routerClient) Put(ctx context.Context, in *PutParameter, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
 	err := c.cc.Invoke(ctx, "/Router/Put", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *routerClient) Delete(ctx context.Context, in *DeleteParameter, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/Router/Delete", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -173,19 +539,89 @@ func (c *routerClient) Put(ctx context.Context, in *PutParameter, opts ...grpc.C
 
 // RouterServer is the server API for Router service.
 type RouterServer interface {
-	Put(context.Context, *PutParameter) (*PutResponse, error)
+	All(context.Context, *NoParameter) (*AllResponse, error)
+	Get(context.Context, *GetParameter) (*GetResponse, error)
+	Lists(context.Context, *ListsParameter) (*ListsResponse, error)
+	Put(context.Context, *PutParameter) (*Response, error)
+	Delete(context.Context, *DeleteParameter) (*Response, error)
 }
 
 // UnimplementedRouterServer can be embedded to have forward compatible implementations.
 type UnimplementedRouterServer struct {
 }
 
-func (*UnimplementedRouterServer) Put(ctx context.Context, req *PutParameter) (*PutResponse, error) {
+func (*UnimplementedRouterServer) All(ctx context.Context, req *NoParameter) (*AllResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method All not implemented")
+}
+func (*UnimplementedRouterServer) Get(ctx context.Context, req *GetParameter) (*GetResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Get not implemented")
+}
+func (*UnimplementedRouterServer) Lists(ctx context.Context, req *ListsParameter) (*ListsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Lists not implemented")
+}
+func (*UnimplementedRouterServer) Put(ctx context.Context, req *PutParameter) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Put not implemented")
+}
+func (*UnimplementedRouterServer) Delete(ctx context.Context, req *DeleteParameter) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Delete not implemented")
 }
 
 func RegisterRouterServer(s *grpc.Server, srv RouterServer) {
 	s.RegisterService(&_Router_serviceDesc, srv)
+}
+
+func _Router_All_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(NoParameter)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RouterServer).All(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/Router/All",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RouterServer).All(ctx, req.(*NoParameter))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Router_Get_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetParameter)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RouterServer).Get(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/Router/Get",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RouterServer).Get(ctx, req.(*GetParameter))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Router_Lists_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListsParameter)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RouterServer).Lists(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/Router/Lists",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RouterServer).Lists(ctx, req.(*ListsParameter))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _Router_Put_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -206,13 +642,47 @@ func _Router_Put_Handler(srv interface{}, ctx context.Context, dec func(interfac
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Router_Delete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteParameter)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RouterServer).Delete(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/Router/Delete",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RouterServer).Delete(ctx, req.(*DeleteParameter))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _Router_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "Router",
 	HandlerType: (*RouterServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
+			MethodName: "All",
+			Handler:    _Router_All_Handler,
+		},
+		{
+			MethodName: "Get",
+			Handler:    _Router_Get_Handler,
+		},
+		{
+			MethodName: "Lists",
+			Handler:    _Router_Lists_Handler,
+		},
+		{
 			MethodName: "Put",
 			Handler:    _Router_Put_Handler,
+		},
+		{
+			MethodName: "Delete",
+			Handler:    _Router_Delete_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
