@@ -1,9 +1,10 @@
-package trigger
+package subscriber
 
 import "sync"
 
-func (c *Trigger) Put(identity string, queue string) (err error) {
-	delivery, err := c.channel.Consume(
+func (c *Subscriber) Put(identity string, queue string) (err error) {
+	c.channel[identity], err = c.conn.Channel()
+	delivery, err := c.channel[identity].Consume(
 		queue,
 		"",
 		false,

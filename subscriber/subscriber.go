@@ -1,9 +1,15 @@
-package client
+package subscriber
 
 import (
 	"github.com/streadway/amqp"
 	"gopkg.in/ini.v1"
+	"log"
 )
+
+type Subscriber struct {
+	conn    *amqp.Connection
+	channel map[string]*amqp.Channel
+}
 
 type Option struct {
 	Host     string
@@ -13,7 +19,9 @@ type Option struct {
 	Vhost    string
 }
 
-func NewClient(config *ini.Section) (*amqp.Connection, error) {
+func Create(config *ini.Section) *Subscriber {
+	var err error
+	subscriber := new(Subscriber)
 	opt := Option{
 		Host:     config.Key("host").String(),
 		Port:     config.Key("port").String(),
@@ -21,7 +29,15 @@ func NewClient(config *ini.Section) (*amqp.Connection, error) {
 		Password: config.Key("password").String(),
 		Vhost:    config.Key("vhost").String(),
 	}
-	return amqp.Dial(
+	subscriber.conn, err = amqp.Dial(
 		"amqp://" + opt.Username + ":" + opt.Password + "@" + opt.Host + ":" + opt.Port + opt.Vhost,
 	)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return subscriber
+}
+
+func (c *Subscriber) Close() {
+	c.conn.Close()
 }

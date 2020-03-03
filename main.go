@@ -1,10 +1,13 @@
 package main
 
 import (
-	"amqp-subscriber/client"
-	"amqp-subscriber/trigger"
+	"amqp-subscriber/controller"
+	pb "amqp-subscriber/router"
+	"amqp-subscriber/subscriber"
+	"google.golang.org/grpc"
 	"gopkg.in/ini.v1"
 	"log"
+	"net"
 	"net/http"
 	_ "net/http/pprof"
 )
@@ -17,17 +20,14 @@ func main() {
 	if err != nil {
 		log.Fatalln(err)
 	}
-	// TODO: GRPC Server 初始化...
-
-	conn, err := client.NewClient(cfg.Section("AMQP"))
+	subscribe := subscriber.Create(cfg.Section("AMQP"))
+	defer subscribe.Close()
+	address := cfg.Section("SERVER").Key("address").String()
+	listen, err := net.Listen("tcp", address)
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatalf("failed to listen: %v", err)
 	}
-	defer conn.Close()
-	channel, err := conn.Channel()
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer channel.Close()
-	trigger.Inject(channel)
+	server := grpc.NewServer()
+	pb.RegisterRouterServer(server, controller.New())
+	server.Serve(listen)
 }
