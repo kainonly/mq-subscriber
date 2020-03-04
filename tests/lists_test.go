@@ -18,5 +18,10 @@ func TestLists(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	println(response.Error)
+	for _, value := range response.Data {
+		println(value.Identity)
+		println(value.Queue)
+		println(value.Url)
+		println(value.Secret)
+	}
 }

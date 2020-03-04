@@ -23,5 +23,4 @@ func (c *controller) Get(ctx context.Context, query *pb.GetParameter) (*pb.GetRe
 			},
 		}, nil
 	}
-
 }
