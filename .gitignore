@@ -21,7 +21,7 @@
 !.vscode/launch.json
 !.vscode/extensions.json
 
-config.ini
-dist
-data
-go.sum
+/storage
+/config.ini
+/dist
+/go.sum
