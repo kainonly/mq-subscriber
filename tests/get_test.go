@@ -12,11 +12,16 @@ func TestGet(t *testing.T) {
 	response, err := client.Get(
 		context.Background(),
 		&pb.GetParameter{
-			Identity: "123",
+			Identity: "a1",
 		},
 	)
 	if err != nil {
 		t.Fatal(err)
 	}
-	println(response.Error)
+	if response.Data != nil {
+		println(response.Data.Identity)
+		println(response.Data.Queue)
+		println(response.Data.Url)
+		println(response.Data.Secret)
+	}
 }
