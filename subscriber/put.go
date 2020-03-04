@@ -1,8 +1,9 @@
 package subscriber
 
-import "sync"
-
 func (c *Subscriber) Put(identity string, queue string) (err error) {
+	if c.channel[identity] != nil {
+		c.channel[identity].Close()
+	}
 	c.channel[identity], err = c.conn.Channel()
 	delivery, err := c.channel[identity].Consume(
 		queue,
@@ -13,14 +14,11 @@ func (c *Subscriber) Put(identity string, queue string) (err error) {
 		false,
 		nil,
 	)
-	var wg sync.WaitGroup
-	wg.Add(1)
 	go func() {
-		defer wg.Done()
 		for d := range delivery {
-			println(d.Body)
+			println(string(d.Body))
+			d.Ack(true)
 		}
 	}()
-	wg.Wait()
 	return
 }

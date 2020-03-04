@@ -32,6 +32,7 @@ func Create(config *ini.Section) *Subscriber {
 	subscriber.conn, err = amqp.Dial(
 		"amqp://" + opt.Username + ":" + opt.Password + "@" + opt.Host + ":" + opt.Port + opt.Vhost,
 	)
+	subscriber.channel = make(map[string]*amqp.Channel)
 	if err != nil {
 		log.Fatal(err)
 	}

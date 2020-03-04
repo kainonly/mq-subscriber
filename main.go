@@ -34,6 +34,9 @@ func main() {
 		log.Fatalf("failed to listen: %v", err)
 	}
 	server := grpc.NewServer()
-	pb.RegisterRouterServer(server, controller.New())
+	pb.RegisterRouterServer(
+		server,
+		controller.New(subscribe),
+	)
 	server.Serve(listen)
 }
