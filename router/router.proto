@@ -1,5 +1,4 @@
 syntax = "proto3";
-import "google/protobuf/any.proto";
 
 message NoParameter {
 }
@@ -14,13 +13,20 @@ message AllResponse {
     repeated string data = 2;
 }
 
+message Option {
+    string identity = 1;
+    string queue = 2;
+    string url = 3;
+    string secret = 4;
+}
+
 message GetParameter {
     string identity = 1;
 }
 
 message GetResponse {
     uint32 error = 1;
-    google.protobuf.Any data = 2;
+    Option data = 2;
 }
 
 message ListsParameter {
@@ -29,7 +35,7 @@ message ListsParameter {
 
 message ListsResponse {
     uint32 error = 1;
-    repeated google.protobuf.Any data = 2;
+    repeated Option data = 2;
 }
 
 message PutParameter {
