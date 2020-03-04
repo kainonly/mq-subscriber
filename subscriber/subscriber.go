@@ -45,3 +45,7 @@ func Create(config *ini.Section) *Subscriber {
 func (c *Subscriber) Close() {
 	c.conn.Close()
 }
+
+func (c *Subscriber) GetOptions() map[string]*common.SubscriberOption {
+	return c.options
+}
