@@ -1,6 +1,7 @@
 package main
 
 import (
+	"amqp-subscriber/common"
 	"amqp-subscriber/controller"
 	pb "amqp-subscriber/router"
 	"amqp-subscriber/subscriber"
@@ -17,7 +18,8 @@ func main() {
 	if err != nil {
 		log.Fatalln(err)
 	}
-	debug, err := cfg.Section("SERVER").Key("debug").Bool()
+	opts := cfg.Section("SERVER")
+	debug, err := opts.Key("debug").Bool()
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -26,9 +28,11 @@ func main() {
 			http.ListenAndServe(":6060", nil)
 		}()
 	}
+	common.InitLevelDB(opts.Key("data").String())
+	defer common.CloseLevelDB()
 	subscribe := subscriber.Create(cfg.Section("AMQP"))
 	defer subscribe.Close()
-	address := cfg.Section("SERVER").Key("address").String()
+	address := opts.Key("address").String()
 	listen, err := net.Listen("tcp", address)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
