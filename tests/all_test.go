@@ -13,5 +13,7 @@ func TestAll(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	println(response.Error)
+	for _, v := range response.Data {
+		println(v)
+	}
 }

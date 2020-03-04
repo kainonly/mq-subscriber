@@ -18,7 +18,9 @@ func TestDelete(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	println(response.Error)
+	if response.Error == 1 {
+		t.Fatal(response.Msg)
+	}
 }
 
 func TestDeleteOther(t *testing.T) {
@@ -33,5 +35,7 @@ func TestDeleteOther(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	println(response.Error)
+	if response.Error == 1 {
+		t.Fatal(response.Msg)
+	}
 }

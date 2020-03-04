@@ -5,5 +5,7 @@ func (c *Subscriber) Delete(identity string) (err error) {
 		c.channel[identity].Close()
 		c.channel[identity] = nil
 	}
+	delete(c.channel, identity)
+	delete(c.options, identity)
 	return
 }
