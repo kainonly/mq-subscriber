@@ -1,6 +1,9 @@
 package subscriber
 
-import "amqp-subscriber/common"
+import (
+	"amqp-subscriber/common"
+	"github.com/parnurzeal/gorequest"
+)
 
 func (c *Subscriber) Put(option common.SubscriberOption) (err error) {
 	if c.channel[option.Identity] != nil {
@@ -19,8 +22,20 @@ func (c *Subscriber) Put(option common.SubscriberOption) (err error) {
 	)
 	go func() {
 		for d := range delivery {
-			println(string(d.Body))
-			d.Ack(true)
+			agent := gorequest.New().Post(option.Url)
+			if option.Secret != "" {
+				agent.Set("X-TOKEN", option.Secret)
+			}
+			if d.Body != nil {
+				agent.Send(d.Body)
+			}
+			_, body, errs := agent.EndBytes()
+			if errs != nil {
+				d.Nack(false, true)
+			} else {
+				println(body)
+				d.Ack(false)
+			}
 		}
 	}()
 	return
