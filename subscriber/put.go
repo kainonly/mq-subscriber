@@ -1,12 +1,15 @@
 package subscriber
 
-func (c *Subscriber) Put(identity string, queue string) (err error) {
-	if c.channel[identity] != nil {
-		c.channel[identity].Close()
+import "amqp-subscriber/common"
+
+func (c *Subscriber) Put(option common.SubscriberOption) (err error) {
+	if c.channel[option.Identity] != nil {
+		c.channel[option.Identity].Close()
 	}
-	c.channel[identity], err = c.conn.Channel()
-	delivery, err := c.channel[identity].Consume(
-		queue,
+	c.channel[option.Identity], err = c.conn.Channel()
+	c.options[option.Identity] = &option
+	delivery, err := c.channel[option.Identity].Consume(
+		option.Queue,
 		"",
 		false,
 		false,

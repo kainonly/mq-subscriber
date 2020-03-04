@@ -1,6 +1,7 @@
 package subscriber
 
 import (
+	"amqp-subscriber/common"
 	"github.com/streadway/amqp"
 	"gopkg.in/ini.v1"
 	"log"
@@ -9,6 +10,7 @@ import (
 type Subscriber struct {
 	conn    *amqp.Connection
 	channel map[string]*amqp.Channel
+	options map[string]*common.SubscriberOption
 }
 
 type Option struct {
@@ -33,6 +35,7 @@ func Create(config *ini.Section) *Subscriber {
 		"amqp://" + opt.Username + ":" + opt.Password + "@" + opt.Host + ":" + opt.Port + opt.Vhost,
 	)
 	subscriber.channel = make(map[string]*amqp.Channel)
+	subscriber.options = make(map[string]*common.SubscriberOption)
 	if err != nil {
 		log.Fatal(err)
 	}
