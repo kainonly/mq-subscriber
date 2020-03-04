@@ -7,10 +7,6 @@ import (
 )
 
 func TestLists(t *testing.T) {
-	conn, err := NewClient()
-	if err != nil {
-		t.Fatal(err)
-	}
 	defer conn.Close()
 	client := pb.NewRouterClient(conn)
 	response, err := client.Lists(
