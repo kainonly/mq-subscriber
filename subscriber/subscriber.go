@@ -2,6 +2,7 @@ package subscriber
 
 import (
 	"amqp-subscriber/common"
+	"github.com/parnurzeal/gorequest"
 	"github.com/streadway/amqp"
 	"log"
 )
@@ -10,14 +11,6 @@ type Subscriber struct {
 	conn    *amqp.Connection
 	channel map[string]*amqp.Channel
 	options map[string]*common.SubscriberOption
-}
-
-type Option struct {
-	Host     string
-	Port     string
-	Username string
-	Password string
-	Vhost    string
 }
 
 func Create(opt *common.AmqpOption) *Subscriber {
@@ -38,6 +31,76 @@ func (c *Subscriber) Close() {
 	c.conn.Close()
 }
 
-func (c *Subscriber) GetOptions() map[string]*common.SubscriberOption {
-	return c.options
+func (c *Subscriber) All() []string {
+	var keys []string
+	for key := range c.options {
+		keys = append(keys, key)
+	}
+	return keys
+}
+
+func (c *Subscriber) Get(identity string) *common.SubscriberOption {
+	return c.options[identity]
+}
+
+func (c *Subscriber) Lists(identity []string) []*common.SubscriberOption {
+	var options []*common.SubscriberOption
+	for _, value := range identity {
+		if c.options[value] != nil {
+			options = append(options, c.options[value])
+		}
+	}
+	return options
+}
+
+func (c *Subscriber) Put(option common.SubscriberOption) (err error) {
+	if c.channel[option.Identity] != nil {
+		c.channel[option.Identity].Close()
+	}
+	c.channel[option.Identity], err = c.conn.Channel()
+	if err != nil {
+		return
+	}
+	c.options[option.Identity] = &option
+	delivery, err := c.channel[option.Identity].Consume(
+		option.Queue,
+		"",
+		false,
+		false,
+		false,
+		false,
+		nil,
+	)
+	if err != nil {
+		return
+	}
+	go func() {
+		for d := range delivery {
+			agent := gorequest.New().Post(option.Url)
+			if option.Secret != "" {
+				agent.Set("X-TOKEN", option.Secret)
+			}
+			if d.Body != nil {
+				agent.Send(d.Body)
+			}
+			_, body, errs := agent.EndBytes()
+			if errs != nil {
+				d.Nack(false, true)
+			} else {
+				println(body)
+				d.Ack(false)
+			}
+		}
+	}()
+	return
+}
+
+func (c *Subscriber) Delete(identity string) (err error) {
+	if c.channel[identity] != nil {
+		c.channel[identity].Close()
+		c.channel[identity] = nil
+	}
+	delete(c.channel, identity)
+	delete(c.options, identity)
+	return
 }
