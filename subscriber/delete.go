@@ -1,5 +1,7 @@
 package subscriber
 
+import "amqp-subscriber/common"
+
 func (c *Subscriber) Delete(identity string) (err error) {
 	if c.channel[identity] != nil {
 		c.channel[identity].Close()
@@ -7,5 +9,5 @@ func (c *Subscriber) Delete(identity string) (err error) {
 	}
 	delete(c.channel, identity)
 	delete(c.options, identity)
-	return
+	return common.SetTemporary(c.options)
 }

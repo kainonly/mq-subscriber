@@ -34,10 +34,20 @@ func Create(config *ini.Section) *Subscriber {
 	subscriber.conn, err = amqp.Dial(
 		"amqp://" + opt.Username + ":" + opt.Password + "@" + opt.Host + ":" + opt.Port + opt.Vhost,
 	)
-	subscriber.channel = make(map[string]*amqp.Channel)
-	subscriber.options = make(map[string]*common.SubscriberOption)
 	if err != nil {
 		log.Fatal(err)
+	}
+	subscriber.channel = make(map[string]*amqp.Channel)
+	subscriber.options = make(map[string]*common.SubscriberOption)
+	temp, err := common.GetTemporary()
+	if err != nil {
+		log.Fatalln(err)
+	}
+	for _, value := range temp {
+		err = subscriber.Put(*value)
+		if err != nil {
+			log.Fatalln(err)
+		}
 	}
 	return subscriber
 }
