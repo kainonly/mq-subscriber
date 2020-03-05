@@ -1,0 +1,8 @@
+debug: true
+listen: 127.0.0.1:6000
+amqp:
+  host: localhost
+  port: 5672
+  username: guest
+  password: guest
+  vhost: /
