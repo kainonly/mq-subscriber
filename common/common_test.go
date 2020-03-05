@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestCallball(t *testing.T) {
+func TestHttpClient(t *testing.T) {
 	agent := gorequest.New().Post("http://localhost:3000")
 	agent.Set("X-TOKEN", "vvv")
 	agent.Send(`{"order":"x-x1"}`)
