@@ -3,7 +3,6 @@ package subscriber
 import (
 	"amqp-subscriber/common"
 	"github.com/streadway/amqp"
-	"gopkg.in/ini.v1"
 	"log"
 )
 
@@ -21,16 +20,9 @@ type Option struct {
 	Vhost    string
 }
 
-func Create(config *ini.Section) *Subscriber {
+func Create(opt *common.AmqpOption) *Subscriber {
 	var err error
 	subscriber := new(Subscriber)
-	opt := Option{
-		Host:     config.Key("host").String(),
-		Port:     config.Key("port").String(),
-		Username: config.Key("username").String(),
-		Password: config.Key("password").String(),
-		Vhost:    config.Key("vhost").String(),
-	}
 	subscriber.conn, err = amqp.Dial(
 		"amqp://" + opt.Username + ":" + opt.Password + "@" + opt.Host + ":" + opt.Port + opt.Vhost,
 	)

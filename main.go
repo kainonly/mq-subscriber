@@ -1,11 +1,13 @@
 package main
 
 import (
+	"amqp-subscriber/common"
 	"amqp-subscriber/controller"
 	pb "amqp-subscriber/router"
 	"amqp-subscriber/subscriber"
 	"google.golang.org/grpc"
-	"gopkg.in/ini.v1"
+	"gopkg.in/yaml.v2"
+	"io/ioutil"
 	"log"
 	"net"
 	"net/http"
@@ -13,26 +15,25 @@ import (
 )
 
 func main() {
-	cfg, err := ini.Load("config.ini")
+	in, err := ioutil.ReadFile("./config/config.yml")
 	if err != nil {
 		log.Fatalln(err)
 	}
-	opts := cfg.Section("SERVER")
-	debug, err := opts.Key("debug").Bool()
+	cfg := common.AppOption{}
+	err = yaml.Unmarshal(in, &cfg)
 	if err != nil {
 		log.Fatalln(err)
 	}
-	if debug {
+	if cfg.Debug {
 		go func() {
 			http.ListenAndServe(":6060", nil)
 		}()
 	}
-	subscribe := subscriber.Create(cfg.Section("AMQP"))
+	subscribe := subscriber.Create(&cfg.Amqp)
 	defer subscribe.Close()
-	address := opts.Key("address").String()
-	listen, err := net.Listen("tcp", address)
+	listen, err := net.Listen("tcp", cfg.Listen)
 	if err != nil {
-		log.Fatalf("failed to listen: %v", err)
+		log.Fatalln(err)
 	}
 	server := grpc.NewServer()
 	pb.RegisterRouterServer(
