@@ -1,7 +1,6 @@
 package main
 
 import (
-	"amqp-subscriber/common"
 	"amqp-subscriber/controller"
 	pb "amqp-subscriber/router"
 	"amqp-subscriber/subscriber"
@@ -28,8 +27,6 @@ func main() {
 			http.ListenAndServe(":6060", nil)
 		}()
 	}
-	common.InitLevelDB(opts.Key("data").String())
-	defer common.CloseLevelDB()
 	subscribe := subscriber.Create(cfg.Section("AMQP"))
 	defer subscribe.Close()
 	address := opts.Key("address").String()

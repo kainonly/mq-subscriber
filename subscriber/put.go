@@ -44,5 +44,5 @@ func (c *Subscriber) Put(option common.SubscriberOption) (err error) {
 			}
 		}
 	}()
-	return common.SetTemporary(c.options)
+	return
 }
