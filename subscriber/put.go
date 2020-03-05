@@ -10,6 +10,9 @@ func (c *Subscriber) Put(option common.SubscriberOption) (err error) {
 		c.channel[option.Identity].Close()
 	}
 	c.channel[option.Identity], err = c.conn.Channel()
+	if err != nil {
+		return
+	}
 	c.options[option.Identity] = &option
 	delivery, err := c.channel[option.Identity].Consume(
 		option.Queue,
@@ -20,6 +23,9 @@ func (c *Subscriber) Put(option common.SubscriberOption) (err error) {
 		false,
 		nil,
 	)
+	if err != nil {
+		return
+	}
 	go func() {
 		for d := range delivery {
 			agent := gorequest.New().Post(option.Url)
@@ -38,5 +44,5 @@ func (c *Subscriber) Put(option common.SubscriberOption) (err error) {
 			}
 		}
 	}()
-	return
+	return common.SetTemporary(c.options)
 }

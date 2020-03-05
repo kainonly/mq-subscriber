@@ -1,13 +1,13 @@
 package common
 
 import (
+	"encoding/json"
 	"github.com/syndtr/goleveldb/leveldb"
 	"log"
 )
 
 var (
-	err error
-	db  *leveldb.DB
+	db *leveldb.DB
 )
 
 type SubscriberOption struct {
@@ -27,4 +27,21 @@ func InitLevelDB(path string) {
 
 func CloseLevelDB() {
 	db.Close()
+}
+
+func SetTemporary(config map[string]*SubscriberOption) (err error) {
+	data, err := json.Marshal(config)
+	err = db.Put([]byte("temporary"), data, nil)
+	return
+}
+
+func GetTemporary() (config map[string]*SubscriberOption, err error) {
+	exists, err := db.Has([]byte("temporary"), nil)
+	if exists == false {
+		config = make(map[string]*SubscriberOption)
+		return
+	}
+	data, err := db.Get([]byte("temporary"), nil)
+	err = json.Unmarshal(data, &config)
+	return
 }
