@@ -39,16 +39,6 @@ func Create(config *ini.Section) *Subscriber {
 	}
 	subscriber.channel = make(map[string]*amqp.Channel)
 	subscriber.options = make(map[string]*common.SubscriberOption)
-	temp, err := common.GetTemporary()
-	if err != nil {
-		log.Fatalln(err)
-	}
-	for _, value := range temp {
-		err = subscriber.Put(*value)
-		if err != nil {
-			log.Fatalln(err)
-		}
-	}
 	return subscriber
 }
 
