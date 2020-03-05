@@ -12,9 +12,13 @@ import (
 	"net"
 	"net/http"
 	_ "net/http/pprof"
+	"os"
 )
 
 func main() {
+	if _, err := os.Stat("./config/autoload"); os.IsNotExist(err) {
+		os.Mkdir("./config/autoload", os.ModeDir)
+	}
 	in, err := ioutil.ReadFile("./config/config.yml")
 	if err != nil {
 		log.Fatalln(err)

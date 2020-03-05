@@ -24,6 +24,14 @@ func Create(opt *common.AmqpOption) *Subscriber {
 	}
 	subscriber.channel = make(map[string]*amqp.Channel)
 	subscriber.options = make(map[string]*common.SubscriberOption)
+	var configs []common.SubscriberOption
+	configs, err = common.ListConfig()
+	for _, opt := range configs {
+		err = subscriber.Put(opt)
+		if err != nil {
+			log.Fatalln(err)
+		}
+	}
 	return subscriber
 }
 
@@ -92,7 +100,7 @@ func (c *Subscriber) Put(option common.SubscriberOption) (err error) {
 			}
 		}
 	}()
-	return
+	return common.SaveConfig(c.options[option.Identity])
 }
 
 func (c *Subscriber) Delete(identity string) (err error) {
@@ -102,5 +110,5 @@ func (c *Subscriber) Delete(identity string) (err error) {
 	}
 	delete(c.channel, identity)
 	delete(c.options, identity)
-	return
+	return common.RemoveConfig(identity)
 }
