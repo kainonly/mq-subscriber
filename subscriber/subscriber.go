@@ -102,22 +102,26 @@ func (c *Subscriber) Put(option common.SubscriberOption) (err error) {
 			}
 			_, body, errs := agent.EndBytes()
 			if errs != nil {
-				log.Error(map[string]interface{}{
+				message := map[string]interface{}{
 					"identity": option.Identity,
 					"queue":    option.Queue,
 					"url":      option.Url,
 					"request":  string(d.Body),
 					"errors":   errs,
-				})
+				}
+				log.Error(message)
+				common.PushLogger(message)
 				d.Nack(false, true)
 			} else {
-				log.Info(map[string]interface{}{
+				message := map[string]interface{}{
 					"identity": option.Identity,
 					"queue":    option.Queue,
 					"url":      option.Url,
 					"request":  string(d.Body),
 					"response": string(body),
-				})
+				}
+				log.Info(message)
+				common.PushLogger(message)
 				d.Ack(false)
 			}
 			if file != nil {
