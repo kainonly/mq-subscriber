@@ -33,7 +33,7 @@ func main() {
 			http.ListenAndServe(":6060", nil)
 		}()
 	}
-	common.InitLogger(&cfg.Log)
+	common.SetLogOption(&cfg.Log)
 	subscribe := subscriber.Create(&cfg.Amqp)
 	defer subscribe.Close()
 	listen, err := net.Listen("tcp", cfg.Listen)
