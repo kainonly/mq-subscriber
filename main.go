@@ -5,10 +5,10 @@ import (
 	"amqp-subscriber/controller"
 	pb "amqp-subscriber/router"
 	"amqp-subscriber/subscriber"
+	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
-	"log"
 	"net"
 	"net/http"
 	_ "net/http/pprof"
@@ -33,6 +33,7 @@ func main() {
 			http.ListenAndServe(":6060", nil)
 		}()
 	}
+	common.InitLogger(&cfg.Log)
 	subscribe := subscriber.Create(&cfg.Amqp)
 	defer subscribe.Close()
 	listen, err := net.Listen("tcp", cfg.Listen)

@@ -6,3 +6,8 @@ amqp:
   username: guest
   password: guest
   vhost: /
+log:
+  storage: true
+  storage_dir: ./log
+  socket: false
+  port: 6001

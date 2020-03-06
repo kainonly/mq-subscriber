@@ -3,8 +3,9 @@ package subscriber
 import (
 	"amqp-subscriber/common"
 	"github.com/parnurzeal/gorequest"
+	log "github.com/sirupsen/logrus"
 	"github.com/streadway/amqp"
-	"log"
+	"os"
 )
 
 type Subscriber struct {
@@ -84,6 +85,12 @@ func (c *Subscriber) Put(option common.SubscriberOption) (err error) {
 	}
 	go func() {
 		for d := range delivery {
+			var file *os.File
+			file, err = common.LogFile(option.Identity)
+			if err != nil {
+				return
+			}
+			log.SetOutput(file)
 			agent := gorequest.New().Post(option.Url)
 			if option.Secret != "" {
 				agent.Set("X-TOKEN", option.Secret)
@@ -93,11 +100,25 @@ func (c *Subscriber) Put(option common.SubscriberOption) (err error) {
 			}
 			_, body, errs := agent.EndBytes()
 			if errs != nil {
+				log.Error(map[string]interface{}{
+					"identity": option.Identity,
+					"queue":    option.Queue,
+					"url":      option.Url,
+					"request":  string(d.Body),
+					"errors":   errs,
+				})
 				d.Nack(false, true)
 			} else {
-				println(body)
+				log.Info(map[string]interface{}{
+					"identity": option.Identity,
+					"queue":    option.Queue,
+					"url":      option.Url,
+					"request":  string(d.Body),
+					"response": string(body),
+				})
 				d.Ack(false)
 			}
+			file.Close()
 		}
 	}()
 	return common.SaveConfig(c.options[option.Identity])
