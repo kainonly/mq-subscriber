@@ -5,6 +5,11 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"time"
+)
+
+var (
+	logOption *LogOption
 )
 
 type (
@@ -12,6 +17,7 @@ type (
 		Debug  bool       `yaml:"debug"`
 		Listen string     `yaml:"listen"`
 		Amqp   AmqpOption `yaml:"amqp"`
+		Log    LogOption  `yaml:"log"`
 	}
 	AmqpOption struct {
 		Host     string `yaml:"host"`
@@ -19,6 +25,12 @@ type (
 		Username string `yaml:"username"`
 		Password string `yaml:"password"`
 		Vhost    string `yaml:"vhost"`
+	}
+	LogOption struct {
+		Storage    bool   `yaml:"storage"`
+		StorageDir string `yaml:"storage_dir"`
+		Socket     bool   `yaml:"socket"`
+		SocketPort string `yaml:"socket_port"`
 	}
 	SubscriberOption struct {
 		Identity string
@@ -76,4 +88,28 @@ func SaveConfig(data *SubscriberOption) (err error) {
 
 func RemoveConfig(identity string) error {
 	return os.Remove(autoload(identity))
+}
+
+func InitLogger(option *LogOption) {
+	logOption = option
+}
+
+func LogFile(identity string) (file *os.File, err error) {
+	if _, err := os.Stat("./" + logOption.StorageDir + "/" + identity); os.IsNotExist(err) {
+		os.Mkdir("./"+logOption.StorageDir+"/"+identity, os.ModeDir)
+	}
+	date := time.Now().Format("2006-01-02")
+	filename := "./" + logOption.StorageDir + "/" + identity + "/" + date + ".log"
+	if _, err = os.Stat(filename); os.IsNotExist(err) {
+		file, err = os.Create(filename)
+		if err != nil {
+			return
+		}
+	} else {
+		file, err = os.OpenFile(filename, os.O_APPEND, 0666)
+		if err != nil {
+			return
+		}
+	}
+	return
 }
