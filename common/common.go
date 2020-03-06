@@ -1,15 +1,19 @@
 package common
 
 import (
+	socketio "github.com/googollee/go-socket.io"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
+	"net/http"
 	"os"
 	"path/filepath"
 	"time"
 )
 
 var (
-	LogOpt *LogOption
+	LogOpt     *LogOption
+	Socket     *socketio.Server
+	SocketConn *socketio.Conn
 )
 
 type (
@@ -90,8 +94,36 @@ func RemoveConfig(identity string) error {
 	return os.Remove(autoload(identity))
 }
 
-func SetLogOption(option *LogOption) {
+func SetLogger(option *LogOption) (err error) {
 	LogOpt = option
+	if LogOpt.Socket {
+		go func() {
+			Socket, err = socketio.NewServer(nil)
+			if err != nil {
+				return
+			}
+			Socket.OnConnect("/", func(s socketio.Conn) error {
+				SocketConn = &s
+				return nil
+			})
+			go Socket.Serve()
+			http.Handle("/socket.io/", Socket)
+			http.ListenAndServe(":"+LogOpt.SocketPort, nil)
+		}()
+	}
+	return
+}
+
+func SocketClose() {
+	if LogOpt.Socket && Socket != nil {
+		Socket.Close()
+	}
+}
+
+func PushLogger(v ...interface{}) {
+	if LogOpt.Socket && *SocketConn != nil {
+		(*SocketConn).Emit("logger", v)
+	}
 }
 
 func OpenStorage() bool {
