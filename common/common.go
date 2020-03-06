@@ -9,7 +9,7 @@ import (
 )
 
 var (
-	logOption *LogOption
+	LogOpt *LogOption
 )
 
 type (
@@ -90,16 +90,20 @@ func RemoveConfig(identity string) error {
 	return os.Remove(autoload(identity))
 }
 
-func InitLogger(option *LogOption) {
-	logOption = option
+func SetLogOption(option *LogOption) {
+	LogOpt = option
+}
+
+func OpenStorage() bool {
+	return LogOpt.Storage
 }
 
 func LogFile(identity string) (file *os.File, err error) {
-	if _, err := os.Stat("./" + logOption.StorageDir + "/" + identity); os.IsNotExist(err) {
-		os.Mkdir("./"+logOption.StorageDir+"/"+identity, os.ModeDir)
+	if _, err := os.Stat("./" + LogOpt.StorageDir + "/" + identity); os.IsNotExist(err) {
+		os.Mkdir("./"+LogOpt.StorageDir+"/"+identity, os.ModeDir)
 	}
 	date := time.Now().Format("2006-01-02")
-	filename := "./" + logOption.StorageDir + "/" + identity + "/" + date + ".log"
+	filename := "./" + LogOpt.StorageDir + "/" + identity + "/" + date + ".log"
 	if _, err = os.Stat(filename); os.IsNotExist(err) {
 		file, err = os.Create(filename)
 		if err != nil {

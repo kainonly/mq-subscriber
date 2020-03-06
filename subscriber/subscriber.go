@@ -86,11 +86,13 @@ func (c *Subscriber) Put(option common.SubscriberOption) (err error) {
 	go func() {
 		for d := range delivery {
 			var file *os.File
-			file, err = common.LogFile(option.Identity)
-			if err != nil {
-				return
+			if common.OpenStorage() {
+				file, err = common.LogFile(option.Identity)
+				if err != nil {
+					return
+				}
+				log.SetOutput(file)
 			}
-			log.SetOutput(file)
 			agent := gorequest.New().Post(option.Url)
 			if option.Secret != "" {
 				agent.Set("X-TOKEN", option.Secret)
@@ -118,7 +120,9 @@ func (c *Subscriber) Put(option common.SubscriberOption) (err error) {
 				})
 				d.Ack(false)
 			}
-			file.Close()
+			if file != nil {
+				file.Close()
+			}
 		}
 	}()
 	return common.SaveConfig(c.options[option.Identity])
