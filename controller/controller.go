@@ -18,6 +18,38 @@ func New(subscribe *subscriber.Subscriber) *controller {
 	return c
 }
 
+func (c *controller) Put(ctx context.Context, query *pb.PutParameter) (*pb.Response, error) {
+	if err := c.subscribe.Put(common.SubscriberOption{
+		Identity: query.Identity,
+		Queue:    query.Queue,
+		Url:      query.Url,
+		Secret:   query.Secret,
+	}); err != nil {
+		return &pb.Response{
+			Error: 1,
+			Msg:   err.Error(),
+		}, nil
+	}
+	return &pb.Response{
+		Error: 0,
+		Msg:   "ok",
+	}, nil
+
+}
+
+func (c *controller) Delete(ctx context.Context, query *pb.DeleteParameter) (*pb.Response, error) {
+	if err := c.subscribe.Delete(query.Identity); err != nil {
+		return &pb.Response{
+			Error: 1,
+			Msg:   err.Error(),
+		}, nil
+	}
+	return &pb.Response{
+		Error: 0,
+		Msg:   "ok",
+	}, nil
+}
+
 func (c *controller) All(ctx context.Context, query *pb.NoParameter) (*pb.AllResponse, error) {
 	return &pb.AllResponse{
 		Error: 0,
@@ -32,17 +64,16 @@ func (c *controller) Get(ctx context.Context, query *pb.GetParameter) (*pb.GetRe
 			Error: 0,
 			Data:  nil,
 		}, nil
-	} else {
-		return &pb.GetResponse{
-			Error: 0,
-			Data: &pb.Option{
-				Identity: option.Identity,
-				Queue:    option.Queue,
-				Url:      option.Url,
-				Secret:   option.Secret,
-			},
-		}, nil
 	}
+	return &pb.GetResponse{
+		Error: 0,
+		Data: &pb.Option{
+			Identity: option.Identity,
+			Queue:    option.Queue,
+			Url:      option.Url,
+			Secret:   option.Secret,
+		},
+	}, nil
 }
 
 func (c *controller) Lists(ctx context.Context, query *pb.ListsParameter) (*pb.ListsResponse, error) {
@@ -59,39 +90,4 @@ func (c *controller) Lists(ctx context.Context, query *pb.ListsParameter) (*pb.L
 		Error: 0,
 		Data:  options,
 	}, nil
-}
-
-func (c *controller) Put(ctx context.Context, query *pb.PutParameter) (*pb.Response, error) {
-	err := c.subscribe.Put(common.SubscriberOption{
-		Identity: query.Identity,
-		Queue:    query.Queue,
-		Url:      query.Url,
-		Secret:   query.Secret,
-	})
-	if err != nil {
-		return &pb.Response{
-			Error: 1,
-			Msg:   err.Error(),
-		}, nil
-	} else {
-		return &pb.Response{
-			Error: 0,
-			Msg:   "ok",
-		}, nil
-	}
-}
-
-func (c *controller) Delete(ctx context.Context, query *pb.DeleteParameter) (*pb.Response, error) {
-	err := c.subscribe.Delete(query.Identity)
-	if err != nil {
-		return &pb.Response{
-			Error: 1,
-			Msg:   err.Error(),
-		}, nil
-	} else {
-		return &pb.Response{
-			Error: 0,
-			Msg:   "ok",
-		}, nil
-	}
 }
