@@ -18,12 +18,12 @@ func New(subscribe *subscriber.Subscriber) *controller {
 	return c
 }
 
-func (c *controller) Put(ctx context.Context, query *pb.PutParameter) (*pb.Response, error) {
+func (c *controller) Put(ctx context.Context, req *pb.PutParameter) (*pb.Response, error) {
 	if err := c.subscribe.Put(common.SubscriberOption{
-		Identity: query.Identity,
-		Queue:    query.Queue,
-		Url:      query.Url,
-		Secret:   query.Secret,
+		Identity: req.Identity,
+		Queue:    req.Queue,
+		Url:      req.Url,
+		Secret:   req.Secret,
 	}); err != nil {
 		return &pb.Response{
 			Error: 1,
@@ -37,8 +37,8 @@ func (c *controller) Put(ctx context.Context, query *pb.PutParameter) (*pb.Respo
 
 }
 
-func (c *controller) Delete(ctx context.Context, query *pb.DeleteParameter) (*pb.Response, error) {
-	if err := c.subscribe.Delete(query.Identity); err != nil {
+func (c *controller) Delete(ctx context.Context, req *pb.DeleteParameter) (*pb.Response, error) {
+	if err := c.subscribe.Delete(req.Identity); err != nil {
 		return &pb.Response{
 			Error: 1,
 			Msg:   err.Error(),
@@ -50,15 +50,15 @@ func (c *controller) Delete(ctx context.Context, query *pb.DeleteParameter) (*pb
 	}, nil
 }
 
-func (c *controller) All(ctx context.Context, query *pb.NoParameter) (*pb.AllResponse, error) {
+func (c *controller) All(ctx context.Context, req *pb.NoParameter) (*pb.AllResponse, error) {
 	return &pb.AllResponse{
 		Error: 0,
 		Data:  c.subscribe.All(),
 	}, nil
 }
 
-func (c *controller) Get(ctx context.Context, query *pb.GetParameter) (*pb.GetResponse, error) {
-	option := c.subscribe.Get(query.Identity)
+func (c *controller) Get(ctx context.Context, req *pb.GetParameter) (*pb.GetResponse, error) {
+	option := c.subscribe.Get(req.Identity)
 	if option == nil {
 		return &pb.GetResponse{
 			Error: 0,
@@ -76,9 +76,9 @@ func (c *controller) Get(ctx context.Context, query *pb.GetParameter) (*pb.GetRe
 	}, nil
 }
 
-func (c *controller) Lists(ctx context.Context, query *pb.ListsParameter) (*pb.ListsResponse, error) {
+func (c *controller) Lists(ctx context.Context, req *pb.ListsParameter) (*pb.ListsResponse, error) {
 	var options []*pb.Option
-	for _, value := range c.subscribe.Lists(query.Identity) {
+	for _, value := range c.subscribe.Lists(req.Identity) {
 		options = append(options, &pb.Option{
 			Identity: value.Identity,
 			Queue:    value.Queue,
