@@ -1,31 +1,48 @@
 # AMQP Subscriber
 
-配置代理订阅 AMQP 消息队列并触发至网络回调接口的微服务
+Configure the broker to subscribe to the AMQP message queue and trigger the microservice to the network callback interface
 
-## 配置
+## Configuration
 
-配置请参考 `config/config.example.yml` 并创建 `config/config.yml`
+For configuration, please refer to `config/config.example.yml`
 
-- **debug** `bool` 开启调试，即 `net/http/pprof`，访问地址为 `http://localhost:6060` 
-- **listen** `string` 微服务监听地址
-- **amqp** `object` AMQP 配置
-    - **host** `string` 连接地址
-    - **port** `int` 端口
-    - **username** `string` 用户名
-    - **password** `string` 密码
-    - **vhost** `string` 虚拟空间
-- **log** `object` 日志配置
-    - **storage** `bool` 开启本地日志
-    - **storage_dir** `string` 本地日志存储目录
-    - **socket** `bool` 开启日志远程传输
-    - **socket_port** `int` 定义socket监听端口
+- **debug** `bool` Start debugging, ie `net/http/pprof`, access address is`http://localhost:6060`
+- **listen** `string` Microservice listening address
+- **amqp** `object` AMQP configuration
+    - **host** `string` Connection address
+    - **port** `int` port
+    - **username** `string` username
+    - **password** `string` password
+    - **vhost** `string` vhost
+- **log** `object` Log configuration
+    - **storage** `bool` Turn on local logs
+    - **storage_dir** `string` Local log storage directory
+    - **socket** `bool` Enable remote log transfer
+    - **socket_port** `int` Define the socket listening port
     
-## 服务
+## Service
 
-服务基于 gRPC 可查看 `router/router.proto`
+The service is based on gRPC and you can view `router/router.proto`
 
 ```
 syntax = "proto3";
+
+service Router {
+    rpc Put (PutParameter) returns (Response) {
+    }
+
+    rpc Delete (DeleteParameter) returns (Response) {
+    }
+
+    rpc Get (GetParameter) returns (GetResponse) {
+    }
+
+    rpc Lists (ListsParameter) returns (ListsResponse) {
+    }
+
+    rpc All (NoParameter) returns (AllResponse) {
+    }
+}
 
 message NoParameter {
 }
@@ -35,34 +52,11 @@ message Response {
     string msg = 2;
 }
 
-message AllResponse {
-    uint32 error = 1;
-    repeated string data = 2;
-}
-
 message Option {
     string identity = 1;
     string queue = 2;
     string url = 3;
     string secret = 4;
-}
-
-message GetParameter {
-    string identity = 1;
-}
-
-message GetResponse {
-    uint32 error = 1;
-    Option data = 2;
-}
-
-message ListsParameter {
-    repeated string identity = 1;
-}
-
-message ListsResponse {
-    uint32 error = 1;
-    repeated Option data = 2;
 }
 
 message PutParameter {
@@ -76,20 +70,29 @@ message DeleteParameter {
     string identity = 1;
 }
 
-service Router {
-    rpc All (NoParameter) returns (AllResponse) {
-    }
+message GetParameter {
+    string identity = 1;
+}
 
-    rpc Get (GetParameter) returns (GetResponse) {
-    }
+message GetResponse {
+    uint32 error = 1;
+    string msg = 2;
+    Option data = 3;
+}
 
-    rpc Lists (ListsParameter) returns (ListsResponse) {
-    }
+message ListsParameter {
+    repeated string identity = 1;
+}
 
-    rpc Put (PutParameter) returns (Response) {
-    }
+message ListsResponse {
+    uint32 error = 1;
+    string msg = 2;
+    repeated Option data = 3;
+}
 
-    rpc Delete (DeleteParameter) returns (Response) {
-    }
+message AllResponse {
+    uint32 error = 1;
+    string msg = 2;
+    repeated string data = 3;
 }
 ```
