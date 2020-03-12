@@ -7,7 +7,7 @@ import (
 	"amqp-subscriber/subscriber"
 	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
-	"gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v3"
 	"io/ioutil"
 	"net"
 	"net/http"
