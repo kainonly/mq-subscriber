@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"sync"
 	"time"
 )
 
@@ -96,7 +97,12 @@ func RemoveConfig(identity string) error {
 
 func SetLogger(option *LogOption) (err error) {
 	LogOpt = option
+	if _, err := os.Stat(option.StorageDir); os.IsNotExist(err) {
+		os.Mkdir(option.StorageDir, os.ModeDir)
+	}
 	if LogOpt.Socket {
+		var wg sync.WaitGroup
+		wg.Add(1)
 		go func() {
 			Socket, err = socketio.NewServer(nil)
 			if err != nil {
@@ -104,12 +110,14 @@ func SetLogger(option *LogOption) (err error) {
 			}
 			Socket.OnConnect("/", func(s socketio.Conn) error {
 				SocketConn = &s
+				wg.Done()
 				return nil
 			})
 			go Socket.Serve()
 			http.Handle("/socket.io/", Socket)
 			http.ListenAndServe(":"+LogOpt.SocketPort, nil)
 		}()
+		wg.Wait()
 	}
 	return
 }
