@@ -5,7 +5,7 @@ import (
 	pb "amqp-subscriber/router"
 	"context"
 	"google.golang.org/grpc"
-	"gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v3"
 	"io/ioutil"
 	"log"
 	"os"
@@ -113,7 +113,10 @@ func BenchmarkPut(b *testing.B) {
 func TestAll(t *testing.T) {
 	defer conn.Close()
 	client := pb.NewRouterClient(conn)
-	response, err := client.All(context.Background(), &pb.NoParameter{})
+	response, err := client.All(
+		context.Background(),
+		&pb.NoParameter{},
+	)
 	if err != nil {
 		t.Fatal(err)
 	}
