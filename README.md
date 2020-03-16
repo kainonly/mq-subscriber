@@ -101,3 +101,117 @@ message AllResponse {
     repeated string data = 3;
 }
 ```
+
+#### rpc Put (PutParameter) returns (Response) {}
+
+Add or update a subscriber
+
+- PutParameter
+  - **identity** `string` subscriber id
+  - **queue** `string` consumption queue
+  - **url** `string` callback hook url
+  - **secret** `string` hook secret
+- Response
+  - **error** `uint32` error code, `0` is normal
+  - **msg** `string` error feedback
+
+```golang
+client := pb.NewRouterClient(conn)
+response, err := client.Put(
+    context.Background(),
+    &pb.PutParameter{
+        Identity: "a1",
+        Queue:    "test",
+        Url:      "http://localhost:3000",
+        Secret:   "123",
+    },
+)
+```
+
+#### rpc Delete (DeleteParameter) returns (Response) {}
+
+remove subscriber
+
+- DeleteParameter
+  - **identity** `string` subscriber id
+- Response
+  - **error** `uint32` error code, `0` is normal
+  - **msg** `string` error feedback
+
+```golang
+client := pb.NewRouterClient(conn)
+response, err := client.Delete(
+    context.Background(),
+    &pb.DeleteParameter{
+        Identity: "a1",
+    },
+)
+```
+
+#### rpc Get (GetParameter) returns (GetResponse) {}
+
+Get Subscriber Information
+
+- GetParameter
+  - **identity** `string` subscriber id
+- GetResponse
+  - **error** `uint32` error code, `0` is normal
+  - **msg** `string` error feedback
+  - **data** `Option` result
+    - **identity** `string` subscriber id
+    - **queue** `string` consumption queue
+    - **url** `string` callback hook url
+    - **secret** `string` hook secret
+
+```golang
+client := pb.NewRouterClient(conn)
+response, err := client.Get(
+    context.Background(),
+    &pb.GetParameter{
+        Identity: "a1",
+    },
+)
+```
+
+#### rpc Lists (ListsParameter) returns (ListsResponse) {}
+
+Get subscriber information in batches
+
+- ListsParameter
+  - **identity** `string` subscriber IDs
+- ListsResponse
+  - **error** `uint32` error code, `0` is normal
+  - **msg** `string` error feedback
+  - **data** `[]Option` result
+    - **identity** `string` subscriber id
+    - **queue** `string` consumption queue
+    - **url** `string` callback hook url
+    - **secret** `string` hook secret 
+
+```golang
+client := pb.NewRouterClient(conn)
+response, err := client.Lists(
+    context.Background(),
+    &pb.ListsParameter{
+        Identity: []string{"a1", "a2"},
+    },
+)
+```
+
+#### rpc All (NoParameter) returns (AllResponse) {}
+
+Get all subscriber IDs
+
+- NoParameter
+- AllResponse
+  - **error** `uint32` error code, `0` is normal
+  - **msg** `string` error feedback
+  - **data** `[]string` subscriber IDs
+
+```golang
+client := pb.NewRouterClient(conn)
+response, err := client.All(
+    context.Background(),
+    &pb.NoParameter{},
+)
+```
