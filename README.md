@@ -7,6 +7,24 @@ Configure the broker to subscribe to the AMQP message queue and trigger the micr
 [![Docker Pulls](https://img.shields.io/docker/pulls/kainonly/amqp-subscriber.svg?style=flat-square)](https://hub.docker.com/r/kainonly/amqp-subscriber)
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://raw.githubusercontent.com/kainonly/samqp-subscriber/master/LICENSE)
 
+## Setup
+
+Example using docker compose
+
+```yaml
+version: "3.7"
+services: 
+  subscriber:
+    image: kainonly/amqp-subscriber
+    restart: always
+    volumes:
+      - ./subscriber/config:/app/config
+      - ./subscriber/log:/app/log
+    ports:
+      - 6000:6000
+      - 6001:6001
+```
+
 ## Configuration
 
 For configuration, please refer to `config/config.example.yml`
