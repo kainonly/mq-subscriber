@@ -150,7 +150,7 @@ func LogFile(identity string) (file *os.File, err error) {
 			return
 		}
 	} else {
-		file, err = os.OpenFile(filename, os.O_APPEND, 0666)
+		file, err = os.OpenFile(filename, os.O_APPEND|os.O_WRONLY, os.ModeAppend)
 		if err != nil {
 			return
 		}
