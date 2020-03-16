@@ -124,9 +124,6 @@ func (c *Subscriber) Put(option common.SubscriberOption) (err error) {
 				common.PushLogger(message)
 				d.Ack(false)
 			}
-			if file != nil {
-				file.Close()
-			}
 		}
 	}()
 	return common.SaveConfig(c.options[option.Identity])

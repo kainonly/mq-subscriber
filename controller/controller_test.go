@@ -37,7 +37,7 @@ func TestPut(t *testing.T) {
 		&pb.PutParameter{
 			Identity: "a1",
 			Queue:    "test",
-			Url:      "http://localhost:3000",
+			Url:      "http://10.0.75.1:3000",
 			Secret:   "123",
 		},
 	)
@@ -57,7 +57,7 @@ func TestPutChange(t *testing.T) {
 		&pb.PutParameter{
 			Identity: "a1",
 			Queue:    "test1",
-			Url:      "http://localhost:3000",
+			Url:      "http://10.0.75.1:3000",
 			Secret:   "123",
 		},
 	)
@@ -77,7 +77,7 @@ func TestPutAdd(t *testing.T) {
 		&pb.PutParameter{
 			Identity: "a2",
 			Queue:    "test",
-			Url:      "http://localhost:3000",
+			Url:      "http://10.0.75.1:3000",
 			Secret:   "123",
 		},
 	)
@@ -97,7 +97,7 @@ func BenchmarkPut(b *testing.B) {
 			&pb.PutParameter{
 				Identity: "a" + string(i),
 				Queue:    "test",
-				Url:      "http://localhost:3000",
+				Url:      "http://10.0.75.1:3000",
 				Secret:   "123",
 			},
 		)
