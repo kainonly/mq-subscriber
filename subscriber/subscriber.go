@@ -98,7 +98,7 @@ func (c *Subscriber) Put(option common.SubscriberOption) (err error) {
 				agent.Set("X-TOKEN", option.Secret)
 			}
 			if d.Body != nil {
-				agent.Send(d.Body)
+				agent.Send(string(d.Body))
 			}
 			_, body, errs := agent.EndBytes()
 			if errs != nil {
