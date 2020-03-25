@@ -21,12 +21,15 @@ func Create(opt *common.AmqpOption) *Subscriber {
 		"amqp://" + opt.Username + ":" + opt.Password + "@" + opt.Host + ":" + opt.Port + opt.Vhost,
 	)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalln(err)
 	}
 	subscriber.channel = make(map[string]*amqp.Channel)
 	subscriber.options = make(map[string]*common.SubscriberOption)
 	var configs []common.SubscriberOption
 	configs, err = common.ListConfig()
+	if err != nil {
+		log.Fatalln(err)
+	}
 	for _, opt := range configs {
 		err = subscriber.Put(opt)
 		if err != nil {
