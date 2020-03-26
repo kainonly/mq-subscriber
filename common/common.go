@@ -18,17 +18,10 @@ var (
 
 type (
 	AppOption struct {
-		Debug  bool       `yaml:"debug"`
-		Listen string     `yaml:"listen"`
-		Amqp   AmqpOption `yaml:"amqp"`
-		Log    LogOption  `yaml:"log"`
-	}
-	AmqpOption struct {
-		Host     string `yaml:"host"`
-		Port     string `yaml:"port"`
-		Username string `yaml:"username"`
-		Password string `yaml:"password"`
-		Vhost    string `yaml:"vhost"`
+		Debug  bool      `yaml:"debug"`
+		Listen string    `yaml:"listen"`
+		Amqp   string    `yaml:"amqp"`
+		Log    LogOption `yaml:"log"`
 	}
 	LogOption struct {
 		Storage    bool   `yaml:"storage"`

@@ -38,7 +38,7 @@ func main() {
 		log.Fatalln(err)
 	}
 	defer common.SocketClose()
-	subscribe := subscriber.Create(&cfg.Amqp)
+	subscribe := subscriber.Create(cfg.Amqp)
 	defer subscribe.Close()
 	listen, err := net.Listen("tcp", cfg.Listen)
 	if err != nil {

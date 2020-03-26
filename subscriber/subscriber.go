@@ -14,12 +14,10 @@ type Subscriber struct {
 	options map[string]*common.SubscriberOption
 }
 
-func Create(opt *common.AmqpOption) *Subscriber {
+func Create(uri string) *Subscriber {
 	var err error
 	subscriber := new(Subscriber)
-	subscriber.conn, err = amqp.Dial(
-		"amqp://" + opt.Username + ":" + opt.Password + "@" + opt.Host + ":" + opt.Port + opt.Vhost,
-	)
+	subscriber.conn, err = amqp.Dial(uri)
 	if err != nil {
 		log.Fatalln(err)
 	}

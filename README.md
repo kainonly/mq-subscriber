@@ -31,12 +31,7 @@ For configuration, please refer to `config/config.example.yml`
 
 - **debug** `bool` Start debugging, ie `net/http/pprof`, access address is`http://localhost:6060`
 - **listen** `string` Microservice listening address
-- **amqp** `object` AMQP configuration
-    - **host** `string` Connection address
-    - **port** `int` port
-    - **username** `string` username
-    - **password** `string` password
-    - **vhost** `string` vhost
+- **amqp** `string` AMQP uri `amqp://guest:guest@localhost:5672/`
 - **log** `object` Log configuration
     - **storage** `bool` Turn on local logs
     - **storage_dir** `string` Local log storage directory
