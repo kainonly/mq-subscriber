@@ -101,9 +101,10 @@ func (c *Subscriber) Put(option common.SubscriberOption) (err error) {
 			if d.Body != nil {
 				agent.Send(string(d.Body))
 			}
+			var message map[string]interface{}
 			_, body, errs := agent.EndBytes()
 			if errs != nil {
-				message := map[string]interface{}{
+				message = map[string]interface{}{
 					"identity": option.Identity,
 					"queue":    option.Queue,
 					"url":      option.Url,
@@ -114,7 +115,7 @@ func (c *Subscriber) Put(option common.SubscriberOption) (err error) {
 				common.PushLogger(message)
 				d.Nack(false, true)
 			} else {
-				message := map[string]interface{}{
+				message = map[string]interface{}{
 					"identity": option.Identity,
 					"queue":    option.Queue,
 					"url":      option.Url,
