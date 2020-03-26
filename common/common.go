@@ -142,7 +142,7 @@ func LoggerClose() {
 	}
 }
 
-func PushLogger(v ...interface{}) (err error) {
+func PushLogger(v interface{}) (err error) {
 	if LogOpt.Socket && SocketConn != nil {
 		(*SocketConn).Emit("logger", v)
 	}
