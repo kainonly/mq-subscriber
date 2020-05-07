@@ -6,6 +6,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/streadway/amqp"
 	"os"
+	"time"
 )
 
 type Subscriber struct {
@@ -105,22 +106,25 @@ func (c *Subscriber) Put(option common.SubscriberOption) (err error) {
 			_, body, errs := agent.EndBytes()
 			if errs != nil {
 				message = map[string]interface{}{
-					"identity": option.Identity,
-					"queue":    option.Queue,
-					"url":      option.Url,
-					"request":  string(d.Body),
-					"errors":   errs,
+					"Identity": option.Identity,
+					"Queue":    option.Queue,
+					"Url":      option.Url,
+					"Request":  string(d.Body),
+					"Errors":   errs,
+					"Time":     time.Now().Unix(),
 				}
 				log.Error(message)
 				common.PushLogger(message)
-				d.Nack(false, true)
+				// please create dead queue, binding dead exchange
+				d.Nack(false, false)
 			} else {
 				message = map[string]interface{}{
-					"identity": option.Identity,
-					"queue":    option.Queue,
-					"url":      option.Url,
-					"request":  string(d.Body),
-					"response": string(body),
+					"Identity": option.Identity,
+					"Queue":    option.Queue,
+					"Url":      option.Url,
+					"Request":  string(d.Body),
+					"Response": string(body),
+					"Time":     time.Now().Unix(),
 				}
 				log.Info(message)
 				common.PushLogger(message)
