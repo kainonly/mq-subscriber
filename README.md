@@ -5,7 +5,7 @@ Configure the broker to subscribe to the AMQP message queue and trigger the micr
 [![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/kainonly/amqp-subscriber?style=flat-square)](https://github.com/kainonly/amqp-subscriber)
 [![Travis](https://img.shields.io/travis/kainonly/amqp-subscriber?style=flat-square)](https://www.travis-ci.org/kainonly/amqp-subscriber)
 [![Docker Pulls](https://img.shields.io/docker/pulls/kainonly/amqp-subscriber.svg?style=flat-square)](https://hub.docker.com/r/kainonly/amqp-subscriber)
-[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://raw.githubusercontent.com/kainonly/samqp-subscriber/master/LICENSE)
+[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://raw.githubusercontent.com/kainonly/amqp-subscriber/master/LICENSE)
 
 ## Setup
 
