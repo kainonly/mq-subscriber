@@ -5,7 +5,7 @@ import (
 	"amqp-subscriber/controller"
 	pb "amqp-subscriber/router"
 	"amqp-subscriber/subscriber"
-	log "github.com/sirupsen/logrus"
+	"github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
@@ -21,12 +21,12 @@ func main() {
 	}
 	in, err := ioutil.ReadFile("./config/config.yml")
 	if err != nil {
-		log.Fatalln(err)
+		logrus.Fatalln(err)
 	}
 	cfg := common.AppOption{}
 	err = yaml.Unmarshal(in, &cfg)
 	if err != nil {
-		log.Fatalln(err)
+		logrus.Fatalln(err)
 	}
 	if cfg.Debug {
 		go func() {
@@ -35,14 +35,14 @@ func main() {
 	}
 	err = common.SetLogger(&cfg.Log)
 	if err != nil {
-		log.Fatalln(err)
+		logrus.Fatalln(err)
 	}
 	defer common.LoggerClose()
 	subscribe := subscriber.Create(cfg.Amqp)
 	defer subscribe.Close()
 	listen, err := net.Listen("tcp", cfg.Listen)
 	if err != nil {
-		log.Fatalln(err)
+		logrus.Fatalln(err)
 	}
 	server := grpc.NewServer()
 	pb.RegisterRouterServer(

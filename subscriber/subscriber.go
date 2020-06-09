@@ -3,7 +3,7 @@ package subscriber
 import (
 	"amqp-subscriber/common"
 	"github.com/parnurzeal/gorequest"
-	log "github.com/sirupsen/logrus"
+	"github.com/sirupsen/logrus"
 	"github.com/streadway/amqp"
 	"os"
 	"time"
@@ -20,19 +20,19 @@ func Create(uri string) *Subscriber {
 	subscriber := new(Subscriber)
 	subscriber.conn, err = amqp.Dial(uri)
 	if err != nil {
-		log.Fatalln(err)
+		logrus.Fatalln(err)
 	}
 	subscriber.channel = make(map[string]*amqp.Channel)
 	subscriber.options = make(map[string]*common.SubscriberOption)
 	var configs []common.SubscriberOption
 	configs, err = common.ListConfig()
 	if err != nil {
-		log.Fatalln(err)
+		logrus.Fatalln(err)
 	}
 	for _, opt := range configs {
 		err = subscriber.Put(opt)
 		if err != nil {
-			log.Fatalln(err)
+			logrus.Fatalln(err)
 		}
 	}
 	return subscriber
@@ -87,13 +87,14 @@ func (c *Subscriber) Put(option common.SubscriberOption) (err error) {
 	}
 	go func() {
 		for d := range delivery {
+			logger := logrus.New()
 			var file *os.File
 			if common.OpenStorage() {
 				file, err = common.LogFile(option.Identity)
 				if err != nil {
 					return
 				}
-				log.SetOutput(file)
+				logger.SetOutput(file)
 			}
 			agent := gorequest.New().Post(option.Url)
 			if option.Secret != "" {
@@ -113,7 +114,7 @@ func (c *Subscriber) Put(option common.SubscriberOption) (err error) {
 					"Errors":   errs,
 					"Time":     time.Now().Unix(),
 				}
-				log.Error(message)
+				logger.Error(message)
 				common.PushLogger(message)
 				// please create dead queue, binding dead exchange
 				d.Nack(false, false)
@@ -126,7 +127,7 @@ func (c *Subscriber) Put(option common.SubscriberOption) (err error) {
 					"Response": string(body),
 					"Time":     time.Now().Unix(),
 				}
-				log.Info(message)
+				logger.Info(message)
 				common.PushLogger(message)
 				d.Ack(false)
 			}
