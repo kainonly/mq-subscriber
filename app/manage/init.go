@@ -10,9 +10,9 @@ import (
 type SessionManager struct {
 	url               string
 	conn              *amqp.Connection
-	done              chan int
 	notifyConnClose   chan *amqp.Error
 	channel           map[string]*amqp.Channel
+	channelDone       map[string]chan int
 	notifyChanClose   map[string]chan *amqp.Error
 	subscriberOptions map[string]*types.SubscriberOption
 	logging           *types.LoggingOption
@@ -21,15 +21,13 @@ type SessionManager struct {
 func NewSessionManager(url string, logging *types.LoggingOption) (manager *SessionManager, err error) {
 	manager = new(SessionManager)
 	manager.url = url
-	conn, err := amqp.Dial(url)
+	manager.conn, err = amqp.Dial(url)
 	if err != nil {
 		return
 	}
-	manager.conn = conn
-	manager.done = make(chan int)
 	manager.notifyConnClose = make(chan *amqp.Error)
-	conn.NotifyClose(manager.notifyConnClose)
-
+	manager.conn.NotifyClose(manager.notifyConnClose)
+	go manager.listenConn()
 	manager.channel = make(map[string]*amqp.Channel)
 	manager.notifyChanClose = make(map[string]chan *amqp.Error)
 	manager.subscriberOptions = make(map[string]*types.SubscriberOption)
@@ -42,8 +40,6 @@ func (c *SessionManager) listenConn() {
 	case <-c.notifyConnClose:
 		logrus.Error("AMQP connection has been disconnected")
 		c.reconnected()
-	case <-c.done:
-		break
 	}
 }
 
@@ -62,7 +58,90 @@ func (c *SessionManager) reconnected() {
 		c.notifyConnClose = make(chan *amqp.Error)
 		conn.NotifyClose(c.notifyConnClose)
 		go c.listenConn()
+		for ID, option := range c.subscriberOptions {
+			err = c.setChannel(ID)
+			if err != nil {
+				continue
+			}
+			err = c.setConsume(*option)
+			if err != nil {
+				continue
+			}
+		}
 		logrus.Info("Attempt to reconnect successfully")
 		break
 	}
+}
+
+func (c *SessionManager) setChannel(ID string) (err error) {
+	c.channel[ID], err = c.conn.Channel()
+	if err != nil {
+		return
+	}
+	c.channelDone[ID] = make(chan int)
+	c.notifyChanClose[ID] = make(chan *amqp.Error)
+	c.channel[ID].NotifyClose(c.notifyChanClose[ID])
+	go c.listenChannel(ID)
+	return
+}
+
+func (c *SessionManager) listenChannel(ID string) {
+	select {
+	case <-c.notifyChanClose[ID]:
+		logrus.Error("Channel connection is disconnected:", ID)
+		c.refreshChannel(ID)
+	case <-c.channelDone[ID]:
+		break
+	}
+}
+
+func (c *SessionManager) refreshChannel(ID string) {
+	for {
+		err := c.setChannel(ID)
+		if err != nil {
+			continue
+		}
+		err = c.setConsume(*c.subscriberOptions[ID])
+		if err != nil {
+			continue
+		}
+		logrus.Info("Channel refresh successfully")
+		break
+	}
+}
+
+func (c *SessionManager) closeChannel(ID string) error {
+	c.channelDone[ID] <- 1
+	return c.channel[ID].Close()
+}
+
+func (c *SessionManager) setConsume(option types.SubscriberOption) (err error) {
+	c.subscriberOptions[option.Identity] = &option
+	delivery, err := c.channel[option.Identity].Consume(
+		option.Queue,
+		option.Identity,
+		false,
+		false,
+		false,
+		false,
+		nil,
+	)
+	go func() {
+		for d := range delivery {
+			println(d)
+		}
+	}()
+	return
+}
+
+func (c *SessionManager) GetIdentityCollection() []string {
+	var keys []string
+	for key := range c.subscriberOptions {
+		keys = append(keys, key)
+	}
+	return keys
+}
+
+func (c *SessionManager) GetOption(identity string) *types.SubscriberOption {
+	return c.subscriberOptions[identity]
 }
