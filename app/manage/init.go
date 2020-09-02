@@ -1,6 +1,7 @@
 package manage
 
 import (
+	"amqp-subscriber/app/actions"
 	"amqp-subscriber/app/schema"
 	"amqp-subscriber/app/types"
 	"errors"
@@ -143,7 +144,40 @@ func (c *SessionManager) setConsume(option types.SubscriberOption) (err error) {
 	)
 	go func() {
 		for d := range delivery {
-			println(string(d.Body))
+			body, errs := actions.Fetch(types.FetchOption{
+				Url:    option.Url,
+				Secret: option.Secret,
+				Body:   string(d.Body),
+			})
+			var message map[string]interface{}
+			if len(errs) != 0 {
+				msg := make([]string, len(errs))
+				for index, value := range errs {
+					msg[index] = value.Error()
+				}
+				message = map[string]interface{}{
+					"Identity": option.Identity,
+					"Queue":    option.Queue,
+					"Url":      option.Url,
+					"Request":  string(d.Body),
+					"Errors":   errs,
+					"Time":     time.Now().Unix(),
+				}
+			} else {
+				message = map[string]interface{}{
+					"Identity": option.Identity,
+					"Queue":    option.Queue,
+					"Url":      option.Url,
+					"Request":  string(d.Body),
+					"Response": string(body),
+					"Time":     time.Now().Unix(),
+				}
+			}
+			actions.Logging(c.logging, &types.LoggingPush{
+				Identity: option.Identity,
+				HasError: len(errs) != 0,
+				Message:  message,
+			})
 		}
 	}()
 	return
