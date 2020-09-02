@@ -16,5 +16,5 @@ func (c *SessionManager) Put(option types.SubscriberOption) (err error) {
 	if err != nil {
 		return
 	}
-	return
+	return c.schema.Update(option)
 }

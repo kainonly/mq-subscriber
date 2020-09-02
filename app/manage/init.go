@@ -1,6 +1,7 @@
 package manage
 
 import (
+	"amqp-subscriber/app/schema"
 	"amqp-subscriber/app/types"
 	"errors"
 	"github.com/sirupsen/logrus"
@@ -17,6 +18,7 @@ type SessionManager struct {
 	notifyChanClose   map[string]chan *amqp.Error
 	subscriberOptions map[string]*types.SubscriberOption
 	logging           *types.LoggingOption
+	schema            *schema.Schema
 }
 
 func NewSessionManager(url string, logging *types.LoggingOption) (manager *SessionManager, err error) {
@@ -33,6 +35,18 @@ func NewSessionManager(url string, logging *types.LoggingOption) (manager *Sessi
 	manager.notifyChanClose = make(map[string]chan *amqp.Error)
 	manager.subscriberOptions = make(map[string]*types.SubscriberOption)
 	manager.logging = logging
+	manager.schema = schema.New()
+	var subscriberOptions []types.SubscriberOption
+	subscriberOptions, err = manager.schema.Lists()
+	if err != nil {
+		return
+	}
+	for _, option := range subscriberOptions {
+		err = manager.Put(option)
+		if err != nil {
+			return
+		}
+	}
 	return
 }
 

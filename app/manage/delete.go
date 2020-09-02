@@ -8,5 +8,5 @@ func (c *SessionManager) Delete(identity string) (err error) {
 	delete(c.channelDone, identity)
 	delete(c.notifyChanClose, identity)
 	delete(c.subscriberOptions, identity)
-	return
+	return c.schema.Delete(identity)
 }
