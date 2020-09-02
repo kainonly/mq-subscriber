@@ -3,7 +3,8 @@
 Configure the broker to subscribe to the AMQP message queue and trigger the microservice to the network callback interface
 
 [![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/kainonly/amqp-subscriber?style=flat-square)](https://github.com/kainonly/amqp-subscriber)
-[![Travis](https://img.shields.io/travis/kainonly/amqp-subscriber?style=flat-square)](https://www.travis-ci.org/kainonly/amqp-subscriber)
+[![Github Actions](https://img.shields.io/github/workflow/status/codexset/amqp-subscriber/release?style=flat-square)](https://github.com/codexset/schedule-microservice/actions)
+[![Image Size](https://img.shields.io/docker/image-size/kainonly/amqp-subscriber?style=flat-square)](https://hub.docker.com/r/kainonly/schedule-microservice)
 [![Docker Pulls](https://img.shields.io/docker/pulls/kainonly/amqp-subscriber.svg?style=flat-square)](https://hub.docker.com/r/kainonly/amqp-subscriber)
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://raw.githubusercontent.com/kainonly/amqp-subscriber/master/LICENSE)
 
@@ -12,7 +13,7 @@ Configure the broker to subscribe to the AMQP message queue and trigger the micr
 Example using docker compose
 
 ```yaml
-version: "3.7"
+version: "3.8"
 services: 
   subscriber:
     image: kainonly/amqp-subscriber
@@ -32,15 +33,8 @@ For configuration, please refer to `config/config.example.yml`
 - **debug** `bool` Start debugging, ie `net/http/pprof`, access address is`http://localhost:6060`
 - **listen** `string` Microservice listening address
 - **amqp** `string` AMQP uri `amqp://guest:guest@localhost:5672/`
-- **log** `object` Log configuration
-    - **storage** `bool` Turn on local logs
-    - **storage_dir** `string` Local log storage directory
-    - **socket** `bool` Enable remote log transfer
-    - **socket_port** `int` Define the socket listening port
-    - **amqp** `bool` Enable amqp log transfer
-    - **amqp_uri** `string` AMQP uri
-    - **amqp_exchange** `string` AMQP exchange name
-    - **amqp_routing_key** `string` AMQP routing key
+- **logging** `object` Log configuration
+    - **storage** `bool` Local log storage directory
     
 ## Service
 
@@ -48,74 +42,74 @@ The service is based on gRPC and you can view `router/router.proto`
 
 ```
 syntax = "proto3";
-
+package amqp.subscriber;
 service Router {
-    rpc Put (PutParameter) returns (Response) {
-    }
+  rpc Put (PutParameter) returns (Response) {
+  }
 
-    rpc Delete (DeleteParameter) returns (Response) {
-    }
+  rpc Delete (DeleteParameter) returns (Response) {
+  }
 
-    rpc Get (GetParameter) returns (GetResponse) {
-    }
+  rpc Get (GetParameter) returns (GetResponse) {
+  }
 
-    rpc Lists (ListsParameter) returns (ListsResponse) {
-    }
+  rpc Lists (ListsParameter) returns (ListsResponse) {
+  }
 
-    rpc All (NoParameter) returns (AllResponse) {
-    }
+  rpc All (NoParameter) returns (AllResponse) {
+  }
 }
 
 message NoParameter {
 }
 
 message Response {
-    uint32 error = 1;
-    string msg = 2;
+  uint32 error = 1;
+  string msg = 2;
 }
 
 message Option {
-    string identity = 1;
-    string queue = 2;
-    string url = 3;
-    string secret = 4;
+  string identity = 1;
+  string queue = 2;
+  string url = 3;
+  string secret = 4;
 }
 
 message PutParameter {
-    string identity = 1;
-    string queue = 2;
-    string url = 3;
-    string secret = 4;
+  string identity = 1;
+  string queue = 2;
+  string url = 3;
+  string secret = 4;
 }
 
 message DeleteParameter {
-    string identity = 1;
+  string identity = 1;
 }
 
 message GetParameter {
-    string identity = 1;
+  string identity = 1;
 }
 
 message GetResponse {
-    uint32 error = 1;
-    string msg = 2;
-    Option data = 3;
+  uint32 error = 1;
+  string msg = 2;
+  Option data = 3;
 }
 
 message ListsParameter {
-    repeated string identity = 1;
+  repeated string identity = 1;
 }
 
 message ListsResponse {
-    uint32 error = 1;
-    string msg = 2;
-    repeated Option data = 3;
+  uint32 error = 1;
+  string msg = 2;
+  repeated Option data = 3;
 }
 
 message AllResponse {
-    uint32 error = 1;
-    string msg = 2;
-    repeated string data = 3;
+  uint32 error = 1;
+  string msg = 2;
+  repeated string data = 3;
 }
 ```
 
