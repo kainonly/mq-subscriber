@@ -2,6 +2,7 @@ package manage
 
 import (
 	"amqp-subscriber/app/types"
+	"errors"
 	"github.com/sirupsen/logrus"
 	"github.com/streadway/amqp"
 	"time"
@@ -128,7 +129,7 @@ func (c *SessionManager) setConsume(option types.SubscriberOption) (err error) {
 	)
 	go func() {
 		for d := range delivery {
-			println(d)
+			println(string(d.Body))
 		}
 	}()
 	return
@@ -142,6 +143,11 @@ func (c *SessionManager) GetIdentityCollection() []string {
 	return keys
 }
 
-func (c *SessionManager) GetOption(identity string) *types.SubscriberOption {
-	return c.subscriberOptions[identity]
+func (c *SessionManager) GetOption(identity string) (option *types.SubscriberOption, err error) {
+	if c.channel[identity] == nil || c.subscriberOptions[identity] == nil {
+		err = errors.New("this identity does not exists")
+		return
+	}
+	option = c.subscriberOptions[identity]
+	return
 }
