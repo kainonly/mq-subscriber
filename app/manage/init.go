@@ -33,6 +33,7 @@ func NewSessionManager(url string, logging *types.LoggingOption) (manager *Sessi
 	manager.conn.NotifyClose(manager.notifyConnClose)
 	go manager.listenConn()
 	manager.channel = make(map[string]*amqp.Channel)
+	manager.channelDone = make(map[string]chan int)
 	manager.notifyChanClose = make(map[string]chan *amqp.Error)
 	manager.subscriberOptions = make(map[string]*types.SubscriberOption)
 	manager.logging = logging
