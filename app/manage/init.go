@@ -164,6 +164,7 @@ func (c *SessionManager) setConsume(option types.SubscriberOption) (err error) {
 					"Errors":   errs,
 					"Time":     time.Now().Unix(),
 				}
+				d.Nack(false, false)
 			} else {
 				message = map[string]interface{}{
 					"Identity": option.Identity,
@@ -173,6 +174,7 @@ func (c *SessionManager) setConsume(option types.SubscriberOption) (err error) {
 					"Response": string(body),
 					"Time":     time.Now().Unix(),
 				}
+				d.Ack(false)
 			}
 			actions.Logging(c.logging, &types.LoggingPush{
 				Identity: option.Identity,
