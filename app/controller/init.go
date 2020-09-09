@@ -7,10 +7,10 @@ import (
 
 type controller struct {
 	pb.UnimplementedRouterServer
-	manager *manage.SessionManager
+	manager *manage.ConsumeManager
 }
 
-func New(manager *manage.SessionManager) *controller {
+func New(manager *manage.ConsumeManager) *controller {
 	c := new(controller)
 	c.manager = manager
 	return c

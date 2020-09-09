@@ -1,18 +1,16 @@
-package manage
+package mq
 
 import (
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
 	"log"
-	"mq-subscriber/app/mq"
 	"mq-subscriber/app/schema"
 	"mq-subscriber/app/types"
 	"os"
 	"testing"
 )
 
-var manager *ConsumeManager
-var option types.SubscriberOption
+var mqlib *MessageQueue
 
 func TestMain(m *testing.M) {
 	os.Chdir("../..")
@@ -30,32 +28,27 @@ func TestMain(m *testing.M) {
 		log.Fatalln("Service configuration file parsing failed", err)
 	}
 	dataset := schema.New()
-	mqclient, err := mq.NewMessageQueue(config.Mq, dataset, &config.Logging)
+	mqlib, err = NewMessageQueue(config.Mq, dataset, &config.Logging)
 	if err != nil {
 		return
-	}
-	manager, err = NewConsumeManager(mqclient, dataset)
-	if err != nil {
-		log.Fatalln(err)
-	}
-	option = types.SubscriberOption{
-		Identity: "task",
-		Queue:    "test",
-		Url:      "http://localhost:3000",
-		Secret:   "fq7K8EsCMjrv4wOB",
 	}
 	os.Exit(m.Run())
 }
 
-func TestSessionManager_Put(t *testing.T) {
-	err := manager.Put(option)
+func TestMessageQueue_Subscribe(t *testing.T) {
+	err := mqlib.Subscribe(types.SubscriberOption{
+		Identity: "task",
+		Queue:    "test",
+		Url:      "http://localhost:3000",
+		Secret:   "fq7K8EsCMjrv4wOB",
+	})
 	if err != nil {
 		t.Fatal(err)
 	}
 }
 
-func TestSessionManager_Delete(t *testing.T) {
-	err := manager.Delete("task")
+func TestMessageQueue_Unsubscribe(t *testing.T) {
+	err := mqlib.Unsubscribe("task")
 	if err != nil {
 		t.Fatal(err)
 	}

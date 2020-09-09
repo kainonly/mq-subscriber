@@ -4,6 +4,8 @@ import (
 	"google.golang.org/grpc"
 	"mq-subscriber/app/controller"
 	"mq-subscriber/app/manage"
+	"mq-subscriber/app/mq"
+	"mq-subscriber/app/schema"
 	"mq-subscriber/app/types"
 	pb "mq-subscriber/router"
 	"net"
@@ -11,30 +13,25 @@ import (
 	_ "net/http/pprof"
 )
 
-type App struct {
-	option *types.Config
-}
-
-func New(config types.Config) *App {
-	app := new(App)
-	app.option = &config
-	return app
-}
-
-func (app *App) Start() (err error) {
+func Application(option *types.Config) (err error) {
 	// Turn on debugging
-	if app.option.Debug {
+	if option.Debug {
 		go func() {
 			http.ListenAndServe(":6060", nil)
 		}()
 	}
 	// Start microservice
-	listen, err := net.Listen("tcp", app.option.Listen)
+	listen, err := net.Listen("tcp", option.Listen)
 	if err != nil {
 		return
 	}
 	server := grpc.NewServer()
-	manager, err := manage.NewSessionManager(app.option.Amqp, &app.option.Logging)
+	dataset := schema.New()
+	mqclient, err := mq.NewMessageQueue(option.Mq, dataset, &option.Logging)
+	if err != nil {
+		return
+	}
+	manager, err := manage.NewConsumeManager(mqclient, dataset)
 	if err != nil {
 		return
 	}
