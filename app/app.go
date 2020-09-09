@@ -3,6 +3,7 @@ package app
 import (
 	"google.golang.org/grpc"
 	"mq-subscriber/app/controller"
+	"mq-subscriber/app/logging"
 	"mq-subscriber/app/manage"
 	"mq-subscriber/app/mq"
 	"mq-subscriber/app/schema"
@@ -27,7 +28,8 @@ func Application(option *types.Config) (err error) {
 	}
 	server := grpc.NewServer()
 	dataset := schema.New()
-	mqclient, err := mq.NewMessageQueue(option.Mq, dataset, &option.Logging)
+	logger := logging.NewLogging(option.Logging)
+	mqclient, err := mq.NewMessageQueue(option.Mq, dataset, logger)
 	if err != nil {
 		return
 	}
