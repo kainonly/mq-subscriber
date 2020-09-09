@@ -1,13 +1,13 @@
 package manage
 
-func (c *SessionManager) Delete(identity string) (err error) {
+func (c *ConsumeManager) Delete(identity string) (err error) {
 	if c.subscriberOptions[identity] == nil {
 		return
 	}
-	c.closeChannel(identity)
-	delete(c.channel, identity)
-	delete(c.channelDone, identity)
-	delete(c.notifyChanClose, identity)
+	err = c.mq.Unsubscribe(identity)
+	if err != nil {
+		return
+	}
 	delete(c.subscriberOptions, identity)
 	return c.schema.Delete(identity)
 }
