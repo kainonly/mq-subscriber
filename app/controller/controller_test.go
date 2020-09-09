@@ -44,7 +44,7 @@ func TestController_Put(t *testing.T) {
 	response, err := client.Put(context.Background(), &pb.PutParameter{
 		Identity: "task",
 		Queue:    "test",
-		Url:      "http://192.168.3.154:3000/task",
+		Url:      "http://mac:3000/task",
 		Secret:   "fq7K8EsCMjrv4wOB",
 	})
 	if err != nil {
@@ -58,7 +58,7 @@ func TestController_Put(t *testing.T) {
 	response, err = client.Put(context.Background(), &pb.PutParameter{
 		Identity: "task-2",
 		Queue:    "test-2",
-		Url:      "http://192.168.3.154:3000/task2",
+		Url:      "http://mac:3000/task2",
 		Secret:   "",
 	})
 	if err != nil {
@@ -133,7 +133,7 @@ func BenchmarkController_Put(b *testing.B) {
 		response, err := client.Put(context.Background(), &pb.PutParameter{
 			Identity: "task-" + strconv.Itoa(i),
 			Queue:    "test",
-			Url:      "http://192.168.3.154:3000/task",
+			Url:      "http://mac:3000/task",
 			Secret:   "fq7K8EsCMjrv4wOB",
 		})
 		if err != nil {

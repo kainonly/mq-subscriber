@@ -1,9 +1,11 @@
 package mq
 
 import (
+	jsoniter "github.com/json-iterator/go"
 	"github.com/sirupsen/logrus"
 	"github.com/streadway/amqp"
 	"mq-subscriber/app/actions"
+	"mq-subscriber/app/logging"
 	"mq-subscriber/app/schema"
 	"mq-subscriber/app/types"
 	"mq-subscriber/app/utils"
@@ -13,7 +15,7 @@ import (
 type AmqpDrive struct {
 	url             string
 	schema          *schema.Schema
-	logging         *types.LoggingOption
+	logging         *logging.Logging
 	conn            *amqp.Connection
 	notifyConnClose chan *amqp.Error
 	channel         *utils.SyncChannel
@@ -21,7 +23,7 @@ type AmqpDrive struct {
 	notifyChanClose *utils.SyncNotifyChanClose
 }
 
-func NewAmqpDrive(url string, schema *schema.Schema, logging *types.LoggingOption) (session *AmqpDrive, err error) {
+func NewAmqpDrive(url string, schema *schema.Schema, logging *logging.Logging) (session *AmqpDrive, err error) {
 	session = new(AmqpDrive)
 	session.url = url
 	session.schema = schema
@@ -149,6 +151,13 @@ func (c *AmqpDrive) SetConsume(option types.SubscriberOption) (err error) {
 				Body:   string(d.Body),
 			})
 			var message map[string]interface{}
+			var bodyRecord interface{}
+			if jsoniter.Valid(d.Body) {
+				jsoniter.Unmarshal(d.Body, &bodyRecord)
+			} else {
+				d.Nack(false, false)
+				return
+			}
 			if len(errs) != 0 {
 				msg := make([]string, len(errs))
 				for index, value := range errs {
@@ -158,23 +167,31 @@ func (c *AmqpDrive) SetConsume(option types.SubscriberOption) (err error) {
 					"Identity": option.Identity,
 					"Queue":    option.Queue,
 					"Url":      option.Url,
-					"Request":  string(d.Body),
+					"Request":  bodyRecord,
 					"Errors":   errs,
 					"Time":     time.Now().Unix(),
 				}
 				d.Nack(false, false)
 			} else {
+				var responseRecord interface{}
+				if jsoniter.Valid(body) {
+					jsoniter.Unmarshal(body, &responseRecord)
+				} else {
+					responseRecord = map[string]interface{}{
+						"raw": string(body),
+					}
+				}
 				message = map[string]interface{}{
 					"Identity": option.Identity,
 					"Queue":    option.Queue,
 					"Url":      option.Url,
-					"Request":  string(d.Body),
-					"Response": string(body),
+					"Request":  bodyRecord,
+					"Response": responseRecord,
 					"Time":     time.Now().Unix(),
 				}
 				d.Ack(false)
 			}
-			actions.Logging(c.logging, &types.LoggingPush{
+			c.logging.Push(&types.LoggingPush{
 				Identity: option.Identity,
 				HasError: len(errs) != 0,
 				Message:  message,

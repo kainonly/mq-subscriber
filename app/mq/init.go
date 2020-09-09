@@ -1,6 +1,7 @@
 package mq
 
 import (
+	"mq-subscriber/app/logging"
 	"mq-subscriber/app/schema"
 	"mq-subscriber/app/types"
 )
@@ -13,7 +14,7 @@ type MessageQueue struct {
 func NewMessageQueue(
 	option types.MqOption,
 	schema *schema.Schema,
-	logging *types.LoggingOption,
+	logging *logging.Logging,
 ) (mq *MessageQueue, err error) {
 	mq = new(MessageQueue)
 	mq.MqOption = option

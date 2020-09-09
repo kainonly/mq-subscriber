@@ -25,7 +25,6 @@ services:
       - ./subscriber/log:/app/log
     ports:
       - 6000:6000
-      - 6001:6001
 ```
 
 ## Configuration
@@ -39,6 +38,9 @@ For configuration, please refer to `config/config.example.yml`
     - **url** `string` E.g `amqp://guest:guest@localhost:5672/`
 - **logging** `object` Log configuration
     - **storage** `bool` Local log storage directory
+    - **transfer** `object` [elastic-transfer](https://github.com/codexset/elastic-transfer) service
+      - **listen** `string` host
+      - **id** `string` transfer id
     
 ## Service
 

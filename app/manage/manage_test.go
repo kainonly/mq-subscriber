@@ -4,6 +4,7 @@ import (
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
 	"log"
+	"mq-subscriber/app/logging"
 	"mq-subscriber/app/mq"
 	"mq-subscriber/app/schema"
 	"mq-subscriber/app/types"
@@ -30,7 +31,8 @@ func TestMain(m *testing.M) {
 		log.Fatalln("Service configuration file parsing failed", err)
 	}
 	dataset := schema.New()
-	mqclient, err := mq.NewMessageQueue(config.Mq, dataset, &config.Logging)
+	logger := logging.NewLogging(config.Logging)
+	mqclient, err := mq.NewMessageQueue(config.Mq, dataset, logger)
 	if err != nil {
 		return
 	}
