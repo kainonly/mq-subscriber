@@ -1,10 +1,9 @@
-module amqp-subscriber
+module mq-subscriber
 
 go 1.15
 
 require (
 	github.com/golang/protobuf v1.3.2
-	github.com/googollee/go-socket.io v1.4.3
 	github.com/parnurzeal/gorequest v0.2.16
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/sirupsen/logrus v1.4.2

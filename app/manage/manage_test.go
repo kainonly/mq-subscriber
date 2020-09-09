@@ -1,8 +1,8 @@
 package manage
 
 import (
-	"amqp-subscriber/app/types"
 	"log"
+	"mq-subscriber/app/types"
 	"os"
 	"testing"
 )

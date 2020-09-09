@@ -1,5 +1,5 @@
 syntax = "proto3";
-package amqp.subscriber;
+package mq.subscriber;
 service Router {
   rpc Put (PutParameter) returns (Response) {
   }

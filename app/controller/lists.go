@@ -1,8 +1,8 @@
 package controller
 
 import (
-	pb "amqp-subscriber/router"
 	"context"
+	pb "mq-subscriber/router"
 )
 
 func (c *controller) Lists(ctx context.Context, param *pb.ListsParameter) (*pb.ListsResponse, error) {

@@ -1,5 +1,7 @@
 debug: true
 listen: 127.0.0.1:6000
-amqp: amqp://guest:guest@localhost:5672/
+mq:
+  drive: amqp
+  url: amqp://guest:guest@localhost:5672/
 logging:
   storage: ./log

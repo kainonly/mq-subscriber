@@ -1,8 +1,8 @@
 package controller
 
 import (
-	pb "amqp-subscriber/router"
 	"context"
+	pb "mq-subscriber/router"
 )
 
 func (c *controller) All(ctx context.Context, _ *pb.NoParameter) (*pb.AllResponse, error) {

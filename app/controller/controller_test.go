@@ -1,13 +1,13 @@
 package controller
 
 import (
-	"amqp-subscriber/app/types"
-	pb "amqp-subscriber/router"
 	"context"
 	"github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
+	"mq-subscriber/app/types"
+	pb "mq-subscriber/router"
 	"os"
 	"strconv"
 	"testing"

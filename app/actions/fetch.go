@@ -1,8 +1,8 @@
 package actions
 
 import (
-	"amqp-subscriber/app/types"
 	"github.com/parnurzeal/gorequest"
+	"mq-subscriber/app/types"
 	"net/http"
 	"time"
 )

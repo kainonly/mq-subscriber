@@ -1,11 +1,11 @@
 package app
 
 import (
-	"amqp-subscriber/app/controller"
-	"amqp-subscriber/app/manage"
-	"amqp-subscriber/app/types"
-	pb "amqp-subscriber/router"
 	"google.golang.org/grpc"
+	"mq-subscriber/app/controller"
+	"mq-subscriber/app/manage"
+	"mq-subscriber/app/types"
+	pb "mq-subscriber/router"
 	"net"
 	"net/http"
 	_ "net/http/pprof"

@@ -1,8 +1,8 @@
 package actions
 
 import (
-	"amqp-subscriber/app/types"
 	"github.com/sirupsen/logrus"
+	"mq-subscriber/app/types"
 	"os"
 	"path"
 	"time"
