@@ -26,11 +26,20 @@ func TestSchema_Update(t *testing.T) {
 	}
 }
 
-func TestSchema_Lists(t *testing.T) {
-	_, err := schema.Lists()
+func TestSchema_Get(t *testing.T) {
+	option, err := schema.Get("task")
 	if err != nil {
 		t.Fatal(err)
 	}
+	t.Log(option)
+}
+
+func TestSchema_Lists(t *testing.T) {
+	options, err := schema.Lists()
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(options)
 }
 
 func TestSchema_Delete(t *testing.T) {

@@ -6,6 +6,7 @@ import (
 	"mq-subscriber/app/actions"
 	"mq-subscriber/app/schema"
 	"mq-subscriber/app/types"
+	"mq-subscriber/app/utils"
 	"time"
 )
 
@@ -15,9 +16,9 @@ type AmqpDrive struct {
 	logging         *types.LoggingOption
 	conn            *amqp.Connection
 	notifyConnClose chan *amqp.Error
-	channel         map[string]*amqp.Channel
-	channelDone     map[string]chan int
-	notifyChanClose map[string]chan *amqp.Error
+	channel         *utils.SyncChannel
+	channelDone     *utils.SyncChannelDone
+	notifyChanClose *utils.SyncNotifyChanClose
 }
 
 func NewAmqpDrive(url string, schema *schema.Schema, logging *types.LoggingOption) (session *AmqpDrive, err error) {
@@ -33,9 +34,9 @@ func NewAmqpDrive(url string, schema *schema.Schema, logging *types.LoggingOptio
 	session.notifyConnClose = make(chan *amqp.Error)
 	conn.NotifyClose(session.notifyConnClose)
 	go session.listenConn()
-	session.channel = make(map[string]*amqp.Channel)
-	session.channelDone = make(map[string]chan int)
-	session.notifyChanClose = make(map[string]chan *amqp.Error)
+	session.channel = utils.NewSyncChannel()
+	session.channelDone = utils.NewSyncChannelDone()
+	session.notifyChanClose = utils.NewSyncNotifyChanClose()
 	return
 }
 
@@ -62,44 +63,32 @@ func (c *AmqpDrive) reconnected() {
 		c.notifyConnClose = make(chan *amqp.Error)
 		conn.NotifyClose(c.notifyConnClose)
 		go c.listenConn()
-		subscriberOptions, err := c.schema.Lists()
-		if err != nil {
-			logrus.Error(err)
-			continue
-		}
-		for _, option := range subscriberOptions {
-			err = c.SetChannel(option.Identity)
-			if err != nil {
-				continue
-			}
-			err = c.SetConsume(option)
-			if err != nil {
-				continue
-			}
-		}
 		logrus.Info("Attempt to reconnect successfully")
 		break
 	}
 }
 
 func (c *AmqpDrive) SetChannel(ID string) (err error) {
-	c.channel[ID], err = c.conn.Channel()
+	var channel *amqp.Channel
+	channel, err = c.conn.Channel()
 	if err != nil {
 		return
 	}
-	c.channelDone[ID] = make(chan int)
-	c.notifyChanClose[ID] = make(chan *amqp.Error)
-	c.channel[ID].NotifyClose(c.notifyChanClose[ID])
+	c.channel.Set(ID, channel)
+	c.channelDone.Set(ID, make(chan int))
+	notifyChanClose := make(chan *amqp.Error)
+	channel.NotifyClose(notifyChanClose)
+	c.notifyChanClose.Set(ID, notifyChanClose)
 	go c.listenChannel(ID)
 	return
 }
 
 func (c *AmqpDrive) listenChannel(ID string) {
 	select {
-	case <-c.notifyChanClose[ID]:
+	case <-c.notifyChanClose.Get(ID):
 		logrus.Error("Channel connection is disconnected:", ID)
 		c.refreshChannel(ID)
-	case <-c.channelDone[ID]:
+	case <-c.channelDone.Get(ID):
 		break
 	}
 }
@@ -124,12 +113,12 @@ func (c *AmqpDrive) refreshChannel(ID string) {
 }
 
 func (c *AmqpDrive) CloseChannel(ID string) error {
-	c.channelDone[ID] <- 1
-	return c.channel[ID].Close()
+	c.channelDone.Get(ID) <- 1
+	return c.channel.Get(ID).Close()
 }
 
 func (c *AmqpDrive) SetConsume(option types.SubscriberOption) (err error) {
-	_, err = c.channel[option.Identity].QueueDeclare(
+	_, err = c.channel.Get(option.Identity).QueueDeclare(
 		option.Queue,
 		true,
 		false,
@@ -140,7 +129,7 @@ func (c *AmqpDrive) SetConsume(option types.SubscriberOption) (err error) {
 	if err != nil {
 		return
 	}
-	msgs, err := c.channel[option.Identity].Consume(
+	msgs, err := c.channel.Get(option.Identity).Consume(
 		option.Queue,
 		option.Identity,
 		false,
