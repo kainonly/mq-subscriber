@@ -1,8 +1,8 @@
 package controller
 
 import (
-	"amqp-subscriber/app/manage"
-	pb "amqp-subscriber/router"
+	"mq-subscriber/app/manage"
+	pb "mq-subscriber/router"
 )
 
 type controller struct {

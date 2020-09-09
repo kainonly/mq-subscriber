@@ -1,7 +1,7 @@
 package manage
 
 import (
-	"amqp-subscriber/app/types"
+	"mq-subscriber/app/types"
 )
 
 func (c *SessionManager) Put(option types.SubscriberOption) (err error) {

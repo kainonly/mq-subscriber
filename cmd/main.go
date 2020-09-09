@@ -1,11 +1,11 @@
 package main
 
 import (
-	"amqp-subscriber/app"
-	"amqp-subscriber/app/types"
 	"github.com/sirupsen/logrus"
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
+	"mq-subscriber/app"
+	"mq-subscriber/app/types"
 	"os"
 )
 

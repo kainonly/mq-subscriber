@@ -1,12 +1,12 @@
-# AMQP Subscriber
+# Mq Subscriber
 
 Configure the broker to subscribe to the AMQP message queue and trigger the microservice to the network callback interface
 
-[![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/codexset/amqp-subscriber?style=flat-square)](https://github.com/codexset/amqp-subscriber)
-[![Github Actions](https://img.shields.io/github/workflow/status/codexset/amqp-subscriber/release?style=flat-square)](https://github.com/codexset/amqp-subscriber/actions)
-[![Image Size](https://img.shields.io/docker/image-size/kainonly/amqp-subscriber?style=flat-square)](https://hub.docker.com/r/kainonly/amqp-subscriber)
-[![Docker Pulls](https://img.shields.io/docker/pulls/kainonly/amqp-subscriber.svg?style=flat-square)](https://hub.docker.com/r/kainonly/amqp-subscriber)
-[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://raw.githubusercontent.com/codexset/amqp-subscriber/master/LICENSE)
+[![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/codexset/mq-subscriber?style=flat-square)](https://github.com/codexset/mq-subscriber)
+[![Github Actions](https://img.shields.io/github/workflow/status/codexset/mq-subscriber/release?style=flat-square)](https://github.com/codexset/mq-subscriber/actions)
+[![Image Size](https://img.shields.io/docker/image-size/kainonly/mq-subscriber?style=flat-square)](https://hub.docker.com/r/kainonly/mq-subscriber)
+[![Docker Pulls](https://img.shields.io/docker/pulls/kainonly/mq-subscriber.svg?style=flat-square)](https://hub.docker.com/r/kainonly/mq-subscriber)
+[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://raw.githubusercontent.com/codexset/mq-subscriber/master/LICENSE)
 
 ## Setup
 
@@ -16,7 +16,7 @@ Example using docker compose
 version: "3.8"
 services: 
   subscriber:
-    image: kainonly/amqp-subscriber
+    image: kainonly/mq-subscriber
     restart: always
     volumes:
       - ./subscriber/config:/app/config
@@ -32,7 +32,9 @@ For configuration, please refer to `config/config.example.yml`
 
 - **debug** `bool` Start debugging, ie `net/http/pprof`, access address is`http://localhost:6060`
 - **listen** `string` Microservice listening address
-- **amqp** `string` AMQP uri `amqp://guest:guest@localhost:5672/`
+- **mq** `object`
+    - **drive** `string` Contains: `amqp`
+    - **url** `string` E.g `amqp://guest:guest@localhost:5672/`
 - **logging** `object` Log configuration
     - **storage** `bool` Local log storage directory
     
@@ -42,7 +44,7 @@ The service is based on gRPC and you can view `router/router.proto`
 
 ```
 syntax = "proto3";
-package amqp.subscriber;
+package mq.subscriber;
 service Router {
   rpc Put (PutParameter) returns (Response) {
   }

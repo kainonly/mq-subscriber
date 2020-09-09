@@ -1,9 +1,9 @@
 package schema
 
 import (
-	"amqp-subscriber/app/types"
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
+	"mq-subscriber/app/types"
 	"os"
 	"path/filepath"
 )

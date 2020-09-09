@@ -1,7 +1,7 @@
 package schema
 
 import (
-	"amqp-subscriber/app/types"
+	"mq-subscriber/app/types"
 	"os"
 	"testing"
 )

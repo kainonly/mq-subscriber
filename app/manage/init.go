@@ -1,12 +1,12 @@
 package manage
 
 import (
-	"amqp-subscriber/app/actions"
-	"amqp-subscriber/app/schema"
-	"amqp-subscriber/app/types"
 	"errors"
 	"github.com/sirupsen/logrus"
 	"github.com/streadway/amqp"
+	"mq-subscriber/app/actions"
+	"mq-subscriber/app/schema"
+	"mq-subscriber/app/types"
 	"time"
 )
 

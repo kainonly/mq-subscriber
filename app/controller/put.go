@@ -1,9 +1,9 @@
 package controller
 
 import (
-	"amqp-subscriber/app/types"
-	pb "amqp-subscriber/router"
 	"context"
+	"mq-subscriber/app/types"
+	pb "mq-subscriber/router"
 )
 
 func (c *controller) Put(ctx context.Context, param *pb.PutParameter) (*pb.Response, error) {
