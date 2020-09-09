@@ -1,12 +1,14 @@
 # Mq Subscriber
 
-Configure the broker to subscribe to the AMQP message queue and trigger the microservice to the network callback interface
+Microservices with automatic message queue consumption and network callback
 
 [![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/codexset/mq-subscriber?style=flat-square)](https://github.com/codexset/mq-subscriber)
 [![Github Actions](https://img.shields.io/github/workflow/status/codexset/mq-subscriber/release?style=flat-square)](https://github.com/codexset/mq-subscriber/actions)
 [![Image Size](https://img.shields.io/docker/image-size/kainonly/mq-subscriber?style=flat-square)](https://hub.docker.com/r/kainonly/mq-subscriber)
 [![Docker Pulls](https://img.shields.io/docker/pulls/kainonly/mq-subscriber.svg?style=flat-square)](https://hub.docker.com/r/kainonly/mq-subscriber)
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://raw.githubusercontent.com/codexset/mq-subscriber/master/LICENSE)
+
+![guide](https://cdn.kainonly.com/resource/mq-subscriber.svg)
 
 ## Setup
 
