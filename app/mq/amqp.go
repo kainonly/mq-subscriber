@@ -167,9 +167,13 @@ func (c *AmqpDrive) SetConsume(option types.SubscriberOption) (err error) {
 					"Identity": option.Identity,
 					"Queue":    option.Queue,
 					"Url":      option.Url,
-					"Request":  bodyRecord,
-					"Errors":   errs,
-					"Time":     time.Now().Unix(),
+					"Secret":   option.Secret,
+					"Body":     bodyRecord,
+					"Status":   false,
+					"Response": map[string]interface{}{
+						"errs": msg,
+					},
+					"Time": time.Now().Unix(),
 				}
 				d.Nack(false, false)
 			} else {
@@ -185,7 +189,9 @@ func (c *AmqpDrive) SetConsume(option types.SubscriberOption) (err error) {
 					"Identity": option.Identity,
 					"Queue":    option.Queue,
 					"Url":      option.Url,
-					"Request":  bodyRecord,
+					"Secret":   option.Secret,
+					"Body":     bodyRecord,
+					"Status":   true,
 					"Response": responseRecord,
 					"Time":     time.Now().Unix(),
 				}
