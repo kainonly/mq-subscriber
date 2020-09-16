@@ -20,6 +20,7 @@ type AmqpDrive struct {
 	notifyConnClose chan *amqp.Error
 	channel         *utils.SyncChannel
 	channelDone     *utils.SyncChannelDone
+	channelReady    *utils.SyncChannelReady
 	notifyChanClose *utils.SyncNotifyChanClose
 }
 
@@ -38,6 +39,7 @@ func NewAmqpDrive(url string, schema *schema.Schema, logging *logging.Logging) (
 	go session.listenConn()
 	session.channel = utils.NewSyncChannel()
 	session.channelDone = utils.NewSyncChannelDone()
+	session.channelReady = utils.NewSyncChannelReady()
 	session.notifyChanClose = utils.NewSyncNotifyChanClose()
 	return
 }
@@ -89,7 +91,11 @@ func (c *AmqpDrive) listenChannel(ID string) {
 	select {
 	case <-c.notifyChanClose.Get(ID):
 		logrus.Error("Channel connection is disconnected:", ID)
-		c.refreshChannel(ID)
+		if c.channelReady.Get(ID) {
+			c.refreshChannel(ID)
+		} else {
+			break
+		}
 	case <-c.channelDone.Get(ID):
 		break
 	}
@@ -107,7 +113,11 @@ func (c *AmqpDrive) refreshChannel(ID string) {
 		}
 		err = c.SetConsume(option)
 		if err != nil {
-			continue
+			if c.channelReady.Get(ID) {
+				continue
+			} else {
+				break
+			}
 		}
 		logrus.Info("Channel refresh successfully")
 		break
@@ -120,17 +130,6 @@ func (c *AmqpDrive) CloseChannel(ID string) error {
 }
 
 func (c *AmqpDrive) SetConsume(option types.SubscriberOption) (err error) {
-	_, err = c.channel.Get(option.Identity).QueueDeclare(
-		option.Queue,
-		true,
-		false,
-		false,
-		false,
-		nil,
-	)
-	if err != nil {
-		return
-	}
 	msgs, err := c.channel.Get(option.Identity).Consume(
 		option.Queue,
 		option.Identity,
@@ -141,8 +140,10 @@ func (c *AmqpDrive) SetConsume(option types.SubscriberOption) (err error) {
 		nil,
 	)
 	if err != nil {
+		c.channelReady.Set(option.Identity, false)
 		return
 	}
+	c.channelReady.Set(option.Identity, true)
 	go func() {
 		for d := range msgs {
 			body, errs := actions.Fetch(types.FetchOption{

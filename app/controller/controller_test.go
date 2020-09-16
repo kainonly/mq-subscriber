@@ -42,24 +42,10 @@ func TestMain(m *testing.M) {
 
 func TestController_Put(t *testing.T) {
 	response, err := client.Put(context.Background(), &pb.PutParameter{
-		Identity: "task",
-		Queue:    "test",
-		Url:      "http://mac:3000/task",
+		Identity: "tests",
+		Queue:    "tests",
+		Url:      "http://mac:3000",
 		Secret:   "fq7K8EsCMjrv4wOB",
-	})
-	if err != nil {
-		t.Fatal(err)
-	}
-	if response.Error != 0 {
-		t.Error(response.Msg)
-	} else {
-		t.Log(response.Msg)
-	}
-	response, err = client.Put(context.Background(), &pb.PutParameter{
-		Identity: "task-2",
-		Queue:    "test-2",
-		Url:      "http://mac:3000/task2",
-		Secret:   "",
 	})
 	if err != nil {
 		t.Fatal(err)
