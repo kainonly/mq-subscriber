@@ -4,6 +4,7 @@ import (
 	jsoniter "github.com/json-iterator/go"
 	"github.com/sirupsen/logrus"
 	"github.com/streadway/amqp"
+	"github.com/xeipuuv/gojsonschema"
 	"mq-subscriber/app/actions"
 	"mq-subscriber/app/logging"
 	"mq-subscriber/app/schema"
@@ -179,11 +180,21 @@ func (c *AmqpDrive) SetConsume(option types.SubscriberOption) (err error) {
 				d.Nack(false, false)
 			} else {
 				var responseRecord interface{}
-				if jsoniter.Valid(body) {
-					jsoniter.Unmarshal(body, &responseRecord)
-				} else {
+				result, err := gojsonschema.Validate(
+					gojsonschema.NewBytesLoader([]byte(`{"type":"object"}`)),
+					gojsonschema.NewBytesLoader(body),
+				)
+				if err != nil {
 					responseRecord = map[string]interface{}{
 						"raw": string(body),
+					}
+				} else {
+					if result.Valid() {
+						jsoniter.Unmarshal(body, &responseRecord)
+					} else {
+						responseRecord = map[string]interface{}{
+							"raw": string(body),
+						}
 					}
 				}
 				message = map[string]interface{}{
