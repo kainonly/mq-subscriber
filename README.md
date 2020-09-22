@@ -46,7 +46,7 @@ For configuration, please refer to `config/config.example.yml`
 
 The service is based on gRPC and you can view `router/router.proto`
 
-```
+```proto
 syntax = "proto3";
 package mq.subscriber;
 service Router {
