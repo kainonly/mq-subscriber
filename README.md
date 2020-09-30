@@ -31,7 +31,7 @@ services:
 
 For configuration, please refer to `config/config.example.yml`
 
-- **debug** `bool` Start debugging, ie `net/http/pprof`, access address is`http://localhost:6060`
+- **debug** `string` Start debugging, ie `net/http/pprof`, access address is`http://localhost:6060`
 - **listen** `string` Microservice listening address
 - **mq** `object`
     - **drive** `string` Contains: `amqp`
