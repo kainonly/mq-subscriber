@@ -2,11 +2,11 @@
 
 Microservices with automatic message queue consumption and network callback
 
-[![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/codexset/mq-subscriber?style=flat-square)](https://github.com/codexset/mq-subscriber)
-[![Github Actions](https://img.shields.io/github/workflow/status/codexset/mq-subscriber/release?style=flat-square)](https://github.com/codexset/mq-subscriber/actions)
+[![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/kainonly/mq-subscriber?style=flat-square)](https://github.com/kainonly/mq-subscriber)
+[![Github Actions](https://img.shields.io/github/workflow/status/kainonly/mq-subscriber/release?style=flat-square)](https://github.com/kainonly/mq-subscriber/actions)
 [![Image Size](https://img.shields.io/docker/image-size/kainonly/mq-subscriber?style=flat-square)](https://hub.docker.com/r/kainonly/mq-subscriber)
 [![Docker Pulls](https://img.shields.io/docker/pulls/kainonly/mq-subscriber.svg?style=flat-square)](https://hub.docker.com/r/kainonly/mq-subscriber)
-[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://raw.githubusercontent.com/codexset/mq-subscriber/master/LICENSE)
+[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://raw.githubusercontent.com/kainonly/mq-subscriber/master/LICENSE)
 
 ![guide](https://cdn.kainonly.com/resource/mq-subscriber.svg)
 
@@ -38,7 +38,7 @@ For configuration, please refer to `config/config.example.yml`
     - **url** `string` E.g `amqp://guest:guest@localhost:5672/`
 - **logging** `object` Log configuration
     - **storage** `bool` Local log storage directory
-    - **transfer** `object` [elastic-transfer](https://github.com/codexset/elastic-transfer) service
+    - **transfer** `object` [elastic-transfer](https://github.com/kainonly/elastic-transfer) service
       - **listen** `string` host
       - **id** `string` transfer id
     
