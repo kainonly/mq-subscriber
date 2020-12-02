@@ -1,0 +1,14 @@
+GET {{url}}/transfers
+
+###
+
+PUT {{url}}/transfer
+Content-Type: application/json
+
+{
+  "id": "mq-subscriber",
+  "index": "mq-subscriber-logs-alpha",
+  "validate": "{\"type\":\"object\"}",
+  "topic": "logs.mq-subscriber",
+  "key": ""
+}

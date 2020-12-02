@@ -1,0 +1,54 @@
+syntax = "proto3";
+package mq.subscriber;
+option go_package = "mq-subscriber/gen/go/mq/subscriber";
+import "google/protobuf/empty.proto";
+import "google/api/annotations.proto";
+
+service API {
+  rpc Get (ID) returns (Option) {
+    option (google.api.http) = {
+      get: "/subscriber",
+    };
+  }
+  rpc Lists (IDs) returns (Options) {
+    option (google.api.http) = {
+      post: "/subscribers",
+      body: "*"
+    };
+  }
+  rpc All (google.protobuf.Empty) returns (IDs) {
+    option (google.api.http) = {
+      get: "/subscribers",
+    };
+  }
+  rpc Put (Option) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      put: "/subscriber",
+      body: "*",
+    };
+  }
+  rpc Delete (ID) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/subscriber",
+    };
+  }
+}
+
+message ID {
+  string id = 1;
+}
+
+message IDs {
+  repeated string ids = 1;
+}
+
+message Option {
+  string id = 1;
+  string queue = 2;
+  string url = 3;
+  string secret = 4;
+}
+
+message Options {
+  repeated Options options = 1;
+}
