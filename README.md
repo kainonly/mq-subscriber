@@ -2,13 +2,11 @@
 
 Microservices with automatic message queue consumption and network callback
 
-[![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/kainonly/mq-subscriber?style=flat-square)](https://github.com/kainonly/mq-subscriber)
-[![Github Actions](https://img.shields.io/github/workflow/status/kainonly/mq-subscriber/release?style=flat-square)](https://github.com/kainonly/mq-subscriber/actions)
+[![Github Actions](https://img.shields.io/github/workflow/status/kain-lab/mq-subscriber/release?style=flat-square)](https://github.com/kain-lab/mq-subscriber/actions)
+[![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/kain-lab/mq-subscriber?style=flat-square)](https://github.com/kain-lab/mq-subscriber)
 [![Image Size](https://img.shields.io/docker/image-size/kainonly/mq-subscriber?style=flat-square)](https://hub.docker.com/r/kainonly/mq-subscriber)
 [![Docker Pulls](https://img.shields.io/docker/pulls/kainonly/mq-subscriber.svg?style=flat-square)](https://hub.docker.com/r/kainonly/mq-subscriber)
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://raw.githubusercontent.com/kainonly/mq-subscriber/master/LICENSE)
-
-![guide](https://cdn.kainonly.com/resource/mq-subscriber.svg)
 
 ## Setup
 
@@ -22,9 +20,10 @@ services:
     restart: always
     volumes:
       - ./subscriber/config:/app/config
-      - ./subscriber/log:/app/log
+      - ./subscriber/logs:/app/logs
     ports:
       - 6000:6000
+      - 8080:8080
 ```
 
 ## Configuration
@@ -32,203 +31,226 @@ services:
 For configuration, please refer to `config/config.example.yml`
 
 - **debug** `string` Start debugging, ie `net/http/pprof`, access address is`http://localhost:6060`
-- **listen** `string` Microservice listening address
-- **mq** `object`
+- **listen** `string` grpc server listening address
+- **gateway** `string` API gateway server listening address
+- **queue** `object`
     - **drive** `string` Contains: `amqp`
-    - **url** `string` E.g `amqp://guest:guest@localhost:5672/`
-- **logging** `object` Log configuration
-    - **storage** `bool` Local log storage directory
-    - **transfer** `object` [elastic-transfer](https://github.com/kainonly/elastic-transfer) service
-      - **listen** `string` host
-      - **id** `string` transfer id
+    - **option** `object` (amqp) 
+        - **url** `string` E.g `amqp://guest:guest@localhost:5672/`
+- **filelog** `string` file log
+- **transfer** `object` [elastic-transfer](https://github.com/kain-lab/elastic-transfer) service
+  - **listen** `string` host
+  - **pipe** `string` id
     
 ## Service
 
-The service is based on gRPC and you can view `router/router.proto`
+The service is based on gRPC to view `api/api.proto`
 
 ```proto
 syntax = "proto3";
 package mq.subscriber;
-service Router {
-  rpc Put (PutParameter) returns (Response) {
-  }
+option go_package = "mq-subscriber/gen/go/mq/subscriber";
+import "google/protobuf/empty.proto";
+import "google/api/annotations.proto";
 
-  rpc Delete (DeleteParameter) returns (Response) {
+service API {
+  rpc Get (ID) returns (Option) {
+    option (google.api.http) = {
+      get: "/subscriber",
+    };
   }
-
-  rpc Get (GetParameter) returns (GetResponse) {
+  rpc Lists (IDs) returns (Options) {
+    option (google.api.http) = {
+      post: "/subscribers",
+      body: "*"
+    };
   }
-
-  rpc Lists (ListsParameter) returns (ListsResponse) {
+  rpc All (google.protobuf.Empty) returns (IDs) {
+    option (google.api.http) = {
+      get: "/subscribers",
+    };
   }
-
-  rpc All (NoParameter) returns (AllResponse) {
+  rpc Put (Option) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      put: "/subscriber",
+      body: "*",
+    };
+  }
+  rpc Delete (ID) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/subscriber",
+    };
   }
 }
 
-message NoParameter {
+message ID {
+  string id = 1;
 }
 
-message Response {
-  uint32 error = 1;
-  string msg = 2;
+message IDs {
+  repeated string ids = 1;
 }
 
 message Option {
-  string identity = 1;
+  string id = 1;
   string queue = 2;
   string url = 3;
   string secret = 4;
 }
 
-message PutParameter {
-  string identity = 1;
-  string queue = 2;
-  string url = 3;
-  string secret = 4;
-}
-
-message DeleteParameter {
-  string identity = 1;
-}
-
-message GetParameter {
-  string identity = 1;
-}
-
-message GetResponse {
-  uint32 error = 1;
-  string msg = 2;
-  Option data = 3;
-}
-
-message ListsParameter {
-  repeated string identity = 1;
-}
-
-message ListsResponse {
-  uint32 error = 1;
-  string msg = 2;
-  repeated Option data = 3;
-}
-
-message AllResponse {
-  uint32 error = 1;
-  string msg = 2;
-  repeated string data = 3;
+message Options {
+  repeated Option options = 1;
 }
 ```
 
-#### rpc Put (PutParameter) returns (Response) {}
+## Get (ID) returns (Option)
 
-Add or update a subscriber
+Get subscriber configuration
 
-- PutParameter
-  - **identity** `string` subscriber id
+### RPC
+
+- **ID**
+  - **id** `string` subscriber id
+- **Option**
+  - **id** `string` subscriber id
   - **queue** `string` consumption queue
   - **url** `string` callback hook url
   - **secret** `string` hook secret
-- Response
-  - **error** `uint32` error code, `0` is normal
-  - **msg** `string` error feedback
 
 ```golang
-client := pb.NewRouterClient(conn)
-response, err := client.Put(
-    context.Background(),
-    &pb.PutParameter{
-        Identity: "a1",
-        Queue:    "test",
-        Url:      "http://localhost:3000",
-        Secret:   "123",
-    },
-)
+client := pb.NewAPIClient(conn)
+response, err := client.Get(context.Background(), &pb.ID{Id: "debug"})
 ```
 
-#### rpc Delete (DeleteParameter) returns (Response) {}
+### API Gateway
 
-remove subscriber
+- **GET** `/subscriber`
 
-- DeleteParameter
-  - **identity** `string` subscriber id
-- Response
-  - **error** `uint32` error code, `0` is normal
-  - **msg** `string` error feedback
-
-```golang
-client := pb.NewRouterClient(conn)
-response, err := client.Delete(
-    context.Background(),
-    &pb.DeleteParameter{
-        Identity: "a1",
-    },
-)
+```http
+GET /subscriber?id=debug HTTP/1.1
+Host: localhost:8080
 ```
 
-#### rpc Get (GetParameter) returns (GetResponse) {}
+## Lists (IDs) returns (Options)
 
-Get Subscriber Information
+Lists subscriber configuration
 
-- GetParameter
-  - **identity** `string` subscriber id
-- GetResponse
-  - **error** `uint32` error code, `0` is normal
-  - **msg** `string` error feedback
-  - **data** `Option` result
-    - **identity** `string` subscriber id
-    - **queue** `string` consumption queue
-    - **url** `string` callback hook url
-    - **secret** `string` hook secret
+### RPC
 
-```golang
-client := pb.NewRouterClient(conn)
-response, err := client.Get(
-    context.Background(),
-    &pb.GetParameter{
-        Identity: "a1",
-    },
-)
-```
-
-#### rpc Lists (ListsParameter) returns (ListsResponse) {}
-
-Get subscriber information in batches
-
-- ListsParameter
-  - **identity** `string` subscriber IDs
-- ListsResponse
-  - **error** `uint32` error code, `0` is normal
-  - **msg** `string` error feedback
-  - **data** `[]Option` result
-    - **identity** `string` subscriber id
+- **IDs**
+  - **ids** `[]string` subscriber IDs
+- **Options**
+  - **options** `[]Option` result
+    - **id** `string` subscriber id
     - **queue** `string` consumption queue
     - **url** `string` callback hook url
     - **secret** `string` hook secret 
 
 ```golang
-client := pb.NewRouterClient(conn)
+client := pb.NewAPIClient(conn)
 response, err := client.Lists(
-    context.Background(),
-    &pb.ListsParameter{
-        Identity: []string{"a1", "a2"},
-    },
+  context.Background(),
+  &pb.IDs{Ids: []string{"debug"}},
 )
 ```
 
-#### rpc All (NoParameter) returns (AllResponse) {}
+### API Gateway
 
-Get all subscriber IDs
+- **POST** `/subscribers`
 
-- NoParameter
-- AllResponse
-  - **error** `uint32` error code, `0` is normal
-  - **msg** `string` error feedback
-  - **data** `[]string` subscriber IDs
+```http
+POST /subscribers HTTP/1.1
+Host: localhost:8080
+Content-Type: application/json
+
+{
+    "ids": [
+        "debug"
+    ]
+}
+```
+
+## All (google.protobuf.Empty) returns (IDs)
+
+Get all subscriber configuration identifiers
+
+### RPC
+
+- **IDs**
+  - **ids** `[]string` subscriber IDs
 
 ```golang
-client := pb.NewRouterClient(conn)
-response, err := client.All(
-    context.Background(),
-    &pb.NoParameter{},
-)
+client := pb.NewAPIClient(conn)
+response, err := client.All(context.Background(), &empty.Empty{})
+```
+
+### API Gateway
+
+- **GET** `/subscribers`
+
+```http
+GET /subscribers HTTP/1.1
+Host: localhost:8080
+```
+
+## Put (Option) returns (google.protobuf.Empty)
+
+Put subscriber configuration
+
+### RPC
+
+- **Option**
+  - **id** `string` subscriber id
+  - **queue** `string` consumption queue
+  - **url** `string` callback hook url
+  - **secret** `string` hook secret
+
+```golang
+client := pb.NewAPIClient(conn)
+_, err := client.Put(context.Background(), &pb.Option{
+  Id:     "debug",
+  Queue:  "subscriber.debug",
+  Url:    "http://mac:3000/subscriber",
+  Secret: "fq7K8EsCMjrv4wOB",
+})
+```
+
+### API Gateway
+
+- **PUT** `/subscriber`
+
+```http
+PUT /subscriber HTTP/1.1
+Host: localhost:8080
+Content-Type: application/json
+
+{
+    "id": "debug",
+    "queue": "subscriber.debug",
+    "url": "http://mac:3000/subscriber",
+    "secret": "fq7K8EsCMjrv4wOB"
+}
+```
+
+## Delete (ID) returns (google.protobuf.Empty)
+
+Remove subscriber configuration
+
+### RPC
+
+- **ID**
+  - **id** `string` subscriber id
+
+```golang
+client := pb.NewAPIClient(conn)
+_, err := client.Delete(context.Background(), &pb.ID{Id: "debug"})
+```
+
+### API Gateway
+
+- **DELETE** `/subscriber`
+
+```http
+DELETE /subscriber?id=debug HTTP/1.1
+Host: localhost:8080
 ```
