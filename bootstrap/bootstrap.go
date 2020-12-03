@@ -10,9 +10,12 @@ import (
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
 	pb "mq-subscriber/api"
+	"mq-subscriber/application/service/consume"
+	"mq-subscriber/application/service/filelog"
 	"mq-subscriber/application/service/queue"
 	"mq-subscriber/application/service/queue/drive"
 	"mq-subscriber/application/service/schema"
+	"mq-subscriber/application/service/transfer"
 	"mq-subscriber/config"
 	"os"
 	"reflect"
@@ -46,6 +49,21 @@ func LoadConfiguration() (cfg *config.Config, err error) {
 // Initialize the schema library configuration
 func InitializeSchema() *schema.Schema {
 	return schema.New("./config/autoload/")
+}
+
+// Initialize filelog
+func InitializeFilelog(cfg *config.Config) *filelog.Filelog {
+	return filelog.New(cfg.Filelog)
+}
+
+// Initialize transfer client
+func InitializeTransfer(cfg *config.Config) (*transfer.Transfer, error) {
+	return transfer.New(cfg.Transfer)
+}
+
+// Initialize amqp consume management
+func InitializeConsume(dep consume.Dependency) (*consume.Consume, error) {
+	return consume.New(&dep)
 }
 
 // Initialize message queue settings

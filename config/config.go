@@ -11,4 +11,5 @@ type Config struct {
 	Gateway  string                 `yaml:"gateway"`
 	Queue    queue.Option           `yaml:"queue"`
 	Transfer options.TransferOption `yaml:"transfer"`
+	Filelog  string                 `yaml:"filelog"`
 }

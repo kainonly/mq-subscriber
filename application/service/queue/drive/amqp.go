@@ -1,9 +1,13 @@
 package drive
 
 import (
+	"github.com/go-playground/validator/v10"
+	jsoniter "github.com/json-iterator/go"
 	"github.com/streadway/amqp"
+	"go.uber.org/zap"
 	"log"
 	"mq-subscriber/application/common/actions"
+	"mq-subscriber/application/common/typ"
 	"mq-subscriber/application/service/queue/utils"
 	"mq-subscriber/config/options"
 	"time"
@@ -126,8 +130,12 @@ func (c *AMQPDrive) closeChannel(identity string) error {
 }
 
 func (c *AMQPDrive) setConsume(option options.SubscriberOption) (err error) {
+	channel := c.channel.Get(option.Identity)
+	if _, err = channel.QueueInspect(option.Queue); err != nil {
+		return QueueNotExists
+	}
 	var msgs <-chan amqp.Delivery
-	if msgs, err = c.channel.Get(option.Identity).Consume(
+	if msgs, err = channel.Consume(
 		option.Queue,
 		option.Identity,
 		false,
@@ -142,69 +150,63 @@ func (c *AMQPDrive) setConsume(option options.SubscriberOption) (err error) {
 	c.channelReady.Set(option.Identity, true)
 	go func() {
 		for d := range msgs {
-			_, errs := actions.Fetch(option.Url, option.Secret, string(d.Body))
-			//var message map[string]interface{}
-			//var bodyRecord interface{}
-			//if jsoniter.Valid(d.Body) {
-			//	jsoniter.Unmarshal(d.Body, &bodyRecord)
-			//} else {
-			//	d.Nack(false, false)
-			//	return
-			//}
+			var err error
+			reqBody := string(d.Body)
+			// The queue message data must be json
+			if err = validator.New().Var(reqBody, "json"); err != nil {
+				d.Nack(false, false)
+				return
+			}
+			content := typ.Log{
+				Identity: option.Identity,
+				Queue:    option.Queue,
+				Url:      option.Url,
+				Secret:   option.Secret,
+				Time:     time.Now().Unix(),
+			}
+			jsoniter.Unmarshal(d.Body, &content.Body)
+			body, errs := actions.Fetch(option.Url, option.Secret, reqBody)
 			if len(errs) != 0 {
-				//msg := make([]string, len(errs))
-				//for index, value := range errs {
-				//	msg[index] = value.Error()
-				//}
-				//message = map[string]interface{}{
-				//	"Identity": option.Identity,
-				//	"Queue":    option.Queue,
-				//	"Url":      option.Url,
-				//	"Secret":   option.Secret,
-				//	"Body":     bodyRecord,
-				//	"Status":   false,
-				//	"Response": map[string]interface{}{
-				//		"errs": msg,
-				//	},
-				//	"Time": time.Now().Unix(),
-				//}
+				info := make([]string, len(errs))
+				for index, value := range errs {
+					info[index] = value.Error()
+				}
+				content.Status = false
+				content.Response = map[string]interface{}{
+					"errs": info,
+				}
 				d.Nack(false, false)
 			} else {
-				//var responseRecord interface{}
-				//result, err := gojsonschema.Validate(
-				//	gojsonschema.NewBytesLoader([]byte(`{"type":"object"}`)),
-				//	gojsonschema.NewBytesLoader(body),
-				//)
-				//if err != nil {
-				//	responseRecord = map[string]interface{}{
-				//		"raw": string(body),
-				//	}
-				//} else {
-				//	if result.Valid() {
-				//		jsoniter.Unmarshal(body, &responseRecord)
-				//	} else {
-				//		responseRecord = map[string]interface{}{
-				//			"raw": string(body),
-				//		}
-				//	}
-				//}
-				//message = map[string]interface{}{
-				//	"Identity": option.Identity,
-				//	"Queue":    option.Queue,
-				//	"Url":      option.Url,
-				//	"Secret":   option.Secret,
-				//	"Body":     bodyRecord,
-				//	"Status":   true,
-				//	"Response": responseRecord,
-				//	"Time":     time.Now().Unix(),
-				//}
+				resBody := string(body)
+				if err = validator.New().Var(resBody, "json"); err != nil {
+					content.Response = map[string]interface{}{
+						"raw": resBody,
+					}
+				} else {
+					jsoniter.Unmarshal(body, &content.Response)
+				}
+				content.Status = true
 				d.Ack(false)
 			}
-			//c.logging.Push(&types.LoggingPush{
-			//	Identity: option.Identity,
-			//	HasError: len(errs) != 0,
-			//	Message:  message,
-			//})
+			go c.Transfer.Push(content)
+			go func() {
+				var logger *zap.Logger
+				if logger, err = c.Filelog.NewLogger(option.Identity); err != nil {
+					return
+				}
+				fields := []zap.Field{
+					zap.String("queue", content.Queue),
+					zap.String("url", content.Url),
+					zap.String("secret", content.Secret),
+					zap.Any("body", content.Body),
+					zap.Any("response", content.Response),
+				}
+				if content.Status {
+					logger.Info(option.Identity, fields...)
+				} else {
+					logger.Error(option.Identity, fields...)
+				}
+			}()
 		}
 	}()
 	return

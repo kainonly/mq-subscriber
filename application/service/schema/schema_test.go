@@ -1,7 +1,7 @@
 package schema
 
 import (
-	"elastic-transfer/config/options"
+	"mq-subscriber/config/options"
 	"os"
 	"testing"
 )
@@ -15,12 +15,11 @@ func TestMain(m *testing.M) {
 }
 
 func TestSchema_Update(t *testing.T) {
-	err := schema.Update(options.PipeOption{
+	err := schema.Update(options.SubscriberOption{
 		Identity: "debug",
-		Index:    "debug-log",
-		Validate: `{"type":"object","properties":{"name":{"type":"string"}}}`,
-		Topic:    "sys.debug",
-		Key:      "",
+		Queue:    "subscriber.debug",
+		Url:      `http://localhost:3000`,
+		Secret:   "abcd",
 	})
 	if err != nil {
 		t.Fatal(err)
