@@ -1,10 +1,11 @@
 debug: :6060
 listen: 127.0.0.1:6000
-mq:
+gateway: 127.0.0.1:8080
+queue:
   drive: amqp
-  url: amqp://guest:guest@localhost:5672/
-logging:
-  storage: ./log
-  transfer:
-    listen:
-    id:
+  option:
+    url: amqp://guest:guest@localhost:5672/
+filelog: ./logs
+transfer:
+  listen: 127.0.0.1:6001
+  pipe: mq-subscriber
