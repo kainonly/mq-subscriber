@@ -1,6 +1,7 @@
 package consume
 
 import (
+	"errors"
 	"go.uber.org/fx"
 	"mq-subscriber/application/service/consume/utils"
 	"mq-subscriber/application/service/queue"
@@ -9,9 +10,13 @@ import (
 )
 
 type Consume struct {
-	subscribers *utils.SubscriberMap
+	Subscribers *utils.SubscriberMap
 	*Dependency
 }
+
+var (
+	NotExists = errors.New("this identity does not exists")
+)
 
 type Dependency struct {
 	fx.In
@@ -23,7 +28,7 @@ type Dependency struct {
 func New(dep *Dependency) (c *Consume, err error) {
 	c = new(Consume)
 	c.Dependency = dep
-	c.subscribers = utils.NewSubscriberMap()
+	c.Subscribers = utils.NewSubscriberMap()
 	var subscriberOptions []options.SubscriberOption
 	if subscriberOptions, err = c.Schema.Lists(); err != nil {
 		return
@@ -34,4 +39,11 @@ func New(dep *Dependency) (c *Consume, err error) {
 		}
 	}
 	return
+}
+
+func (c *Consume) GetSubscriber(identity string) (*options.SubscriberOption, error) {
+	if c.Subscribers.Empty(identity) {
+		return nil, NotExists
+	}
+	return c.Subscribers.Get(identity), nil
 }

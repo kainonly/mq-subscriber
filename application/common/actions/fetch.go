@@ -6,16 +6,16 @@ import (
 	"time"
 )
 
-func Fetch(url string, secret string, content interface{}) (body []byte, errs []error) {
+func Fetch(url string, secret string, body interface{}) ([]byte, []error) {
 	agent := gorequest.New().Post(url)
 	if secret != "" {
 		agent.Set("X-TOKEN", secret)
 	}
-	if content != nil {
-		agent.Send(content)
+	if body != nil {
+		agent.Send(body)
 	}
-	_, body, errs = agent.
+	_, resBody, errs := agent.
 		Retry(3, 5*time.Second, http.StatusBadRequest, http.StatusInternalServerError).
 		EndBytes()
-	return
+	return resBody, errs
 }

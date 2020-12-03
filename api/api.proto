@@ -50,5 +50,5 @@ message Option {
 }
 
 message Options {
-  repeated Options options = 1;
+  repeated Option options = 1;
 }

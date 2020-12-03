@@ -13,6 +13,9 @@ func main() {
 			bootstrap.LoadConfiguration,
 			bootstrap.InitializeSchema,
 			bootstrap.InitializeQueue,
+			bootstrap.InitializeFilelog,
+			bootstrap.InitializeTransfer,
+			bootstrap.InitializeConsume,
 		),
 		fx.Invoke(application.Application),
 	).Run()

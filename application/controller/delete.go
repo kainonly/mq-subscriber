@@ -6,6 +6,9 @@ import (
 	pb "mq-subscriber/api"
 )
 
-func (c *controller) Delete(_ context.Context, option *pb.ID) (_ *empty.Empty, err error) {
-	return nil, nil
+func (c *controller) Delete(_ context.Context, option *pb.ID) (*empty.Empty, error) {
+	if err := c.Consume.Delete(option.Id); err != nil {
+		return nil, err
+	}
+	return &empty.Empty{}, nil
 }
